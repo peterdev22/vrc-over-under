@@ -1,6 +1,6 @@
 {
 	"project": {
-		"name": "robotDrive",
+		"name": "vrc-over-under",
 		"slot": 1,
 		"description": "",
 		"platform": "V5",
