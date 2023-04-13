@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "robotDrive",
+		"slot": 1,
+		"description": "",
+		"platform": "V5",
+		"creationDate": "Thu, 13 Apr 2023 03:52:52 GMT",
+		"language": "python",
+		"python": {
+			"main": "/src/main.py"
+		},
+		"sdkVersion": "V5_1_0_1_15"
+	},
+	"extension": {
+		"version": "0.4.1",
+		"json": 1
+	}
+}
