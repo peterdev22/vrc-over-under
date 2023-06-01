@@ -70,41 +70,58 @@ inertial.set_heading(0, DEGREES)
 def team_choosing():
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(0,0,240,120)
-    brain.screen.set_cursor(3, 8)
+    brain.screen.draw_rectangle(-1,-1,240,120)
+    brain.screen.set_cursor(4,15)
     brain.screen.print("Red 1")
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(240,0,240,120)
-    brain.screen.set_cursor(3, 32)
+    brain.screen.draw_rectangle(240,-1,240,120)
+    brain.screen.set_cursor(4,49)
     brain.screen.print("Red 2")
     brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(0,120,240,120)
-    brain.screen.set_cursor(10, 8)
+    brain.screen.draw_rectangle(-1,120,240,120)
+    brain.screen.set_cursor(12,14)
     brain.screen.print("Blue 1")
     brain.screen.set_fill_color(Color.BLUE)
     brain.screen.draw_rectangle(240,120,240,120)
-    brain.screen.set_cursor(10, 32)
+    brain.screen.set_cursor(12, 48)
     brain.screen.print("Blue 2")
     while not brain.screen.pressing():
         wait(5,MSEC)
-    if brain.screen.x_position<240 and brain.screen.y_position<120:
+    while brain.screen.x_position() == 240 or brain.screen.x_position() == 120:
+        wait(5,MSEC)
+    if brain.screen.x_position() < 240 and brain.screen.y_position() < 120:
         brain.screen.set_fill_color(Color.RED)
         team_position = "RED_1"
-    elif brain.screen.x_position>240 and brain.screen.y_position<120:
+    elif brain.screen.x_position() > 240 and brain.screen.y_position() < 120:
         brain.screen.set_fill_color(Color.RED)
         team_position = "RED_2"
-    elif brain.screen.x_position<240 and brain.screen.y_position>120:
+    elif brain.screen.x_position() < 240 and brain.screen.y_position() > 120:
         brain.screen.set_fill_color(Color.BLUE)
         team_position = "BLUE_1"
-    elif brain.screen.x_position>240 and brain.screen.y_position>120:
+    elif brain.screen.x_position() > 240 and brain.screen.y_position() > 120:
         brain.screen.set_fill_color(Color.BLUE)
         team_position = "BLUE_2"
-    brain.screen.draw_rectangle(0,0,240,120)
-    brain.screen.set_cursor(6, 9)
+    brain.screen.draw_rectangle(0, 0, 480, 240)
     brain.screen.set_font(FontType.MONO60)
-    brain.screen.print("75477F")
-    brain.screen.next_row()
-    brain.screen.print(team_position)
+    print_text = "75477F " + team_position
+    brain.screen.set_cursor(2, 2)
+    brain.screen.print(print_text)
+    if "RED" in team_position:
+        brain.screen.set_fill_color(Color.BLUE)
+    elif "BLUE" in team_position:
+        brain.screen.set_fill_color(Color.RED)
+    brain.screen.draw_rectangle(30, 180, 180, 60)
+    brain.screen.set_cursor(4, 3)
+    brain.screen.print("Back")
+    brain.screen.draw_rectangle(270, 180, 180, 60)
+    brain.screen.set_cursor(4, 10)
+    brain.screen.print("Check")
+    while not brain.screen.pressing():
+        wait(5,MSEC)
+    if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
+        team_choosing()
+    elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
+        return team_position
     
 # turing def
 #* Direction = RIGHT or LEFT
@@ -158,20 +175,19 @@ def driver_control():
     
     # Process every 20 milliseconds
     while True:
+        # Drive Train
         forward = controller_1.axis3.position()
         rotate = controller_1.axis4.position()*0.6
 
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
 
-        
         if left_drive_smart_speed < 5 and left_drive_smart_speed > -5:
             if left_drive_smart_stopped:
                 left_drive_smart.stop()
                 left_drive_smart_stopped = False
         else:
             left_drive_smart_stopped = True
-
         if right_drive_smart_speed < 5 and right_drive_smart_speed > -5:
             if right_drive_smart_stopped:
                 right_drive_smart.stop()
@@ -179,15 +195,13 @@ def driver_control():
         else:
             right_drive_smart_stopped = True
 
-        
         if left_drive_smart_stopped:
             left_drive_smart.set_velocity(left_drive_smart_speed, PERCENT)
             left_drive_smart.spin(FORWARD)
         if right_drive_smart_stopped:
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
-
-# claw control
+        # Claw control
         claw_speed = controller_1.axis2.position()
 
         if claw_speed < 3 and claw_speed > -3:
@@ -200,7 +214,7 @@ def driver_control():
         if claw_stopped:
             claw.set_velocity(claw_speed, PERCENT)
             claw.spin(FORWARD)  
-# todo puncher control 
+        # todo puncher control 
         pass
 
 # ---------------------- Driver Control End -------------------------------
@@ -209,7 +223,7 @@ def driver_control():
     wait(20, MSEC)
 
 #choose team
-team_choosing()
+team_position = team_choosing()
 
 # Competition functions for the driver control & autonomous tasks
 competition = Competition(driver_control, autonomous)
