@@ -32,6 +32,7 @@ right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
 claw = Motor(Ports.PORT2, GearSetting.RATIO_36_1, True)
+puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
 
 # Drivetrain
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 1.6666666666666667)
@@ -66,7 +67,7 @@ inertial.set_heading(0, DEGREES)
 
 
 # team and side choosing
-# 1 for defence and 2 for offence
+#* 1 for defence and 2 for offence
 def team_choosing():
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
@@ -159,12 +160,24 @@ def goto(x_cord, y_cord):
 def vision(object):
     pass
 
+#punch def
+def punch(times):
+    puncher.spin_for(FORWARD, 170, DEGREES, wait=True)
+    while not controller_1.buttonA.pressing:
+        if -5< controller_1.axis1.position() <5 or -5< controller_1.axis2.position() <5:
+            return
+        wait(20, MSEC)
+    puncher.spin_for(FORWARD, 190, DEGREES, wait=True)
+    times -= 1
+    if times > 0:
+        punch(times)
+
 # ------------------------ Autonomous Start -------------------------------
 def autonomous():
     if team_position == "RED_1" or team_position == "BLUE_1":
-        pass
+        controller_1.screen.print(team_position)
     elif team_position == "RED_2" or team_position == "BLUE_2":
-        pass
+        controller_1.screen.print(team_position)
     else:
         pass
 
@@ -213,7 +226,7 @@ def driver_control():
         
         if claw_stopped:
             claw.set_velocity(claw_speed, PERCENT)
-            claw.spin(FORWARD)  
+            claw.spin(FORWARD) 
         # todo puncher control 
         pass
 
