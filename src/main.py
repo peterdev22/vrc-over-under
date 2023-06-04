@@ -128,6 +128,7 @@ def team_choosing():
         elif "BLUE" in team_position:
             brain.screen.set_fill_color(Color.BLUE)
         brain.screen.draw_rectangle(30, 180, 450, 60)
+#todo add file to the sd-card on vex brain
         brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
         return team_position
     
@@ -235,7 +236,8 @@ def driver_control():
             claw.set_velocity(claw_speed, PERCENT)
             claw.spin(FORWARD) 
         # todo puncher control 
-        pass
+        if controller_1.buttonR1.pressing():
+            punch(1)
 
 # ---------------------- Driver Control End -------------------------------
 
