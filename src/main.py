@@ -163,7 +163,7 @@ def vision(object):
 #punch def
 def punch(times):
     puncher.spin_for(FORWARD, 170, DEGREES, wait=True)
-    while not controller_1.buttonA.pressing:
+    while not controller_1.buttonA.pressing():
         if -5< controller_1.axis1.position() <5 or -5< controller_1.axis2.position() <5:
             return
         wait(20, MSEC)
