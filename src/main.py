@@ -69,21 +69,22 @@ inertial.set_heading(0, DEGREES)
 # team and side choosing
 #* 1 for defence and 2 for offence
 def team_choosing():
+    brain.screen.clear_screen()
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(-1,-1,240,120)
+    brain.screen.draw_rectangle(-1, -1, 240, 120)
     brain.screen.set_cursor(4,15)
     brain.screen.print("Red 1")
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(240,-1,240,120)
+    brain.screen.draw_rectangle(240, -1, 240, 120)
     brain.screen.set_cursor(4,49)
     brain.screen.print("Red 2")
     brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(-1,120,240,120)
+    brain.screen.draw_rectangle(-1, 120, 240, 120)
     brain.screen.set_cursor(12,14)
     brain.screen.print("Blue 1")
     brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(240,120,240,120)
+    brain.screen.draw_rectangle(240, 120, 240, 120)
     brain.screen.set_cursor(12, 48)
     brain.screen.print("Blue 2")
     while not brain.screen.pressing():
@@ -122,6 +123,12 @@ def team_choosing():
     if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
         team_choosing()
     elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
+        if "RED" in team_position:
+            brain.screen.set_fill_color(Color.RED)
+        elif "BLUE" in team_position:
+            brain.screen.set_fill_color(Color.BLUE)
+        brain.screen.draw_rectangle(30, 180, 450, 60)
+        brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
         return team_position
     
 # turing def
