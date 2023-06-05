@@ -69,22 +69,23 @@ inertial.set_heading(0, DEGREES)
 # team and side choosing
 #* 1 for defence and 2 for offence
 def team_choosing():
+    wait(2000, MSEC)
     brain.screen.clear_screen()
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(-1, -1, 240, 120)
+    brain.screen.draw_rectangle(-1, -1, 241, 121)
     brain.screen.set_cursor(4,15)
     brain.screen.print("Red 1")
     brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(240, -1, 240, 120)
+    brain.screen.draw_rectangle(240, -1, 241, 121)
     brain.screen.set_cursor(4,49)
     brain.screen.print("Red 2")
     brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(-1, 120, 240, 120)
+    brain.screen.draw_rectangle(-1, 120, 241, 121)
     brain.screen.set_cursor(12,14)
     brain.screen.print("Blue 1")
     brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(240, 120, 240, 120)
+    brain.screen.draw_rectangle(240, 120, 241, 121)
     brain.screen.set_cursor(12, 48)
     brain.screen.print("Blue 2")
     while not brain.screen.pressing():
@@ -118,7 +119,8 @@ def team_choosing():
     brain.screen.draw_rectangle(270, 180, 180, 60)
     brain.screen.set_cursor(4, 10)
     brain.screen.print("Check")
-    while not brain.screen.pressing():
+    wait(2000, MSEC)
+    while not (brain.screen.pressing() and((210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180) or (450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180))) :
         wait(5,MSEC)
     if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
         team_choosing()
@@ -129,7 +131,7 @@ def team_choosing():
             brain.screen.set_fill_color(Color.BLUE)
         brain.screen.draw_rectangle(30, 180, 450, 60)
 #todo add file to the sd-card on vex brain
-        brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
+        #brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
         return team_position
     
 # turing def
@@ -183,11 +185,13 @@ def punch(times):
 # ------------------------ Autonomous Start -------------------------------
 def autonomous():
     if team_position == "RED_1" or team_position == "BLUE_1":
-        controller_1.screen.print(team_position)
+        controller_1.screen.print(team_position + " 1")
+        
     elif team_position == "RED_2" or team_position == "BLUE_2":
-        controller_1.screen.print(team_position)
+        controller_1.screen.print(team_position + " 2")
     else:
-        pass
+        controller_1.screen.print(team_position + " none")
+        
 
 
 # -------------- Autonomous End & Driver Control Start ---------------------
