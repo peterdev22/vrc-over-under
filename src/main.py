@@ -69,7 +69,8 @@ inertial.set_heading(0, DEGREES)
 # team and side choosing
 #* 1 for defence and 2 for offence
 def team_choosing():
-    wait(2000, MSEC)
+    while brain.screen.pressing():
+        wait(5,MSEC)
     brain.screen.clear_screen()
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
@@ -119,7 +120,8 @@ def team_choosing():
     brain.screen.draw_rectangle(270, 180, 180, 60)
     brain.screen.set_cursor(4, 10)
     brain.screen.print("Check")
-    wait(2000, MSEC)
+    while brain.screen.pressing():
+        wait(5,MSEC)
     while not (brain.screen.pressing() and((210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180) or (450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180))) :
         wait(5,MSEC)
     if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
