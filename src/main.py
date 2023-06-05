@@ -69,8 +69,7 @@ inertial.set_heading(0, DEGREES)
 # team and side choosing
 #* 1 for defence and 2 for offence
 def team_choosing():
-    while brain.screen.pressing():
-        wait(5,MSEC)
+    wait(500,MSEC)
     brain.screen.clear_screen()
     brain.screen.set_font(FontType.MONO15)
     brain.screen.set_fill_color(Color.RED)
