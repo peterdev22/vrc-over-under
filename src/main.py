@@ -70,7 +70,7 @@ elevation_a.set(True)
 elevation_b.set(True)
 
 # team and side choosing
-#* 1 for defence and 2 for offence
+# - 1 for defence and 2 for offence
 def team_choosing():
     wait(500,MSEC)
     brain.screen.clear_screen()
@@ -131,12 +131,12 @@ def team_choosing():
     elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
         brain.screen.set_fill_color(Color.White)
         brain.screen.draw_rectangle(30, 180, 450, 60)
-#todo add file to the sd-card on vex brain
-        #*brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
+        #todo add file to the sd-card on vex brain
+        #brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
         return team_position
     
 # turing def
-#* Direction = RIGHT or LEFT
+# - Direction = RIGHT or LEFT
 def drivetrain_turn(target_angle, Direction):
     drivetrain.turn(Direction)
     current_angle = inertial.heading(DEGREES)
@@ -151,7 +151,7 @@ def drivetrain_turn(target_angle, Direction):
         drivetrain.set_turn_velocity(turn_angle*0.3, PERCENT)
     drivetrain.stop()
 
-#gps sensor def
+# gps sensor def
 def goto(x_cord, y_cord):
     b = x_cord - gps.x_position(MM)
     c = y_cord - gps.y_position(MM)
@@ -169,7 +169,7 @@ def goto(x_cord, y_cord):
 def vision(object):
     pass
 
-#punch def
+# punch def
 def punch(times):
     puncher.spin_for(FORWARD, 170, DEGREES, wait=True)
     while not controller_1.buttonA.pressing():
@@ -181,13 +181,13 @@ def punch(times):
     if times > 0:
         punch(times)
         
-#elevation def
-#* status = True(extend) or False(retract)
+# elevation def
+# - status = True(extend) or False(retract)
 def elevation(status):
     elevation_a.set(status)
     elevation_b.set(status)
 
-# ------------------------ Autonomous Start -------------------------------
+# Autonomous Start
 def autonomous():
     if team_position == "RED_1" or team_position == "BLUE_1":
         controller_1.screen.print(team_position + " 1")
@@ -196,10 +196,8 @@ def autonomous():
         controller_1.screen.print(team_position + " 2")
     else:
         controller_1.screen.print(team_position + " none")
-        
 
-
-# -------------- Autonomous End & Driver Control Start ---------------------
+# Autonomous End & Driver Control Start
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, claw_stopped
     # Process every 20 milliseconds
@@ -252,7 +250,6 @@ def driver_control():
         else:
             elevation(True)
 
-# ---------------------- Driver Control End -------------------------------
 
     # Wait before repeating the controller input process
     wait(20, MSEC)
