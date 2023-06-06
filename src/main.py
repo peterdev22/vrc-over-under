@@ -42,7 +42,8 @@ inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
 
 # Pneumatics
-cylinder_a = DigitalOut(brain.three_wire_port.a)
+elevation_a = DigitalOut(brain.three_wire_port.a)
+elevation_b = DigitalOut(brain.three_wire_port.b)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -65,6 +66,8 @@ gps.calibrate()
 wait(2,SECONDS)
 inertial.set_heading(0, DEGREES)
 
+elevation_a.set(True)
+elevation_b.set(True)
 
 # team and side choosing
 #* 1 for defence and 2 for offence
@@ -137,11 +140,10 @@ def team_choosing():
     
 # turing def
 #* Direction = RIGHT or LEFT
-#! do not change!
 def drivetrain_turn(target_angle, Direction):
     drivetrain.turn(Direction)
     current_angle = inertial.heading(DEGREES)
-    while not target_angle+1 > current_angle > target_angle:
+    while not target_angle + 1 > current_angle > target_angle:
         if Direction == LEFT:
             turn_angle = current_angle - target_angle
         else:
@@ -153,7 +155,6 @@ def drivetrain_turn(target_angle, Direction):
     drivetrain.stop()
 
 #gps sensor def
-#! do not change!
 def goto(x_cord, y_cord):
     b = x_cord - gps.x_position(MM)
     c = y_cord - gps.y_position(MM)
@@ -182,6 +183,12 @@ def punch(times):
     times -= 1
     if times > 0:
         punch(times)
+        
+#elevation def
+#* status = True(extend) or False(retract)
+def elevation(status):
+    elevation_a.set(status)
+    elevation_b.set(status)
 
 # ------------------------ Autonomous Start -------------------------------
 def autonomous():
@@ -198,10 +205,9 @@ def autonomous():
 # -------------- Autonomous End & Driver Control Start ---------------------
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, claw_stopped
-    
     # Process every 20 milliseconds
     while True:
-        # Drive Train
+    # Drive Train
         forward = controller_1.axis3.position()
         rotate = controller_1.axis4.position()*0.6
 
@@ -227,7 +233,7 @@ def driver_control():
         if right_drive_smart_stopped:
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
-        # Claw control
+    # Claw control
         claw_speed = controller_1.axis2.position()
 
         if claw_speed < 3 and claw_speed > -3:
@@ -240,9 +246,14 @@ def driver_control():
         if claw_stopped:
             claw.set_velocity(claw_speed, PERCENT)
             claw.spin(FORWARD) 
-        # todo puncher control 
+    # puncher control 
         if controller_1.buttonR1.pressing():
             punch(1)
+    # elevation control
+        if controller_1.buttonL1.pressing():
+            elevation(False)
+        else:
+            elevation(True)
 
 # ---------------------- Driver Control End -------------------------------
 
