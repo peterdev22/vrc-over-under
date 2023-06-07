@@ -10,9 +10,11 @@ import urandom
 
 # Wiring Guide
 # - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
-# - claw motor: #2
+
 # - inertial sensor: #3
 # - gps sensor: #9
+# - elevation cylinders: #a; #b
+
 
 # Brain
 brain = Brain()
@@ -31,7 +33,6 @@ right_motor_b = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
 right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
-claw = Motor(Ports.PORT2, GearSetting.RATIO_36_1, True)
 puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
 
 # Drivetrain
@@ -187,7 +188,7 @@ def elevation(status):
     elevation_a.set(status)
     elevation_b.set(status)
 
-# Autonomous Start
+# Autonomous def
 def autonomous():
     if team_position == "RED_1" or team_position == "BLUE_1":
         controller_1.screen.print(team_position + " 1")
@@ -197,7 +198,7 @@ def autonomous():
     else:
         controller_1.screen.print(team_position + " none")
 
-# Autonomous End & Driver Control Start
+#  Driver Control def
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, claw_stopped
     # Process every 20 milliseconds
@@ -228,19 +229,6 @@ def driver_control():
         if right_drive_smart_stopped:
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
-    # Claw control
-        claw_speed = controller_1.axis2.position()
-
-        if claw_speed < 3 and claw_speed > -3:
-            if claw_stopped:
-                claw.stop()
-                claw_stopped = False
-        else:
-            claw_stopped = True
-        
-        if claw_stopped:
-            claw.set_velocity(claw_speed, PERCENT)
-            claw.spin(FORWARD) 
     # puncher control 
         if controller_1.buttonR1.pressing():
             punch(1)
