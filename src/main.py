@@ -10,7 +10,7 @@ import urandom
 
 # Wiring Guide
 # - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
-
+# - intake: #7
 # - inertial sensor: #3
 # - gps sensor: #9
 # - elevation cylinders: #a; #b
@@ -34,6 +34,7 @@ right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
 puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
+intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
 
 # Drivetrain
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 1.6666666666666667)
@@ -56,15 +57,12 @@ right_drive_smart_stopped = False
 left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
-claw_speed = 0
-claw_stopped = False
-claw.set_stopping(HOLD)
+intake.set_stopping(HOLD)
 
 team_position = " "
 
 inertial.calibrate()
 gps.calibrate()
-wait(2,SECONDS)
 inertial.set_heading(0, DEGREES)
 
 elevation_a.set(True)
@@ -233,10 +231,18 @@ def driver_control():
         if controller_1.buttonR1.pressing():
             punch(1)
     # elevation control
-        if controller_1.buttonL1.pressing():
+        if controller_1.buttonR2.pressing():
             elevation(False)
         else:
             elevation(True)
+    #intake control
+        if controller_1.buttonL1.pressing():
+            intake.spin(FORWARD)
+        elif controller_1.buttonL2.pressing():
+            intake.spin(REVERSE)
+        else:
+            intake.stop()
+            
 
 
     # Wait before repeating the controller input process
