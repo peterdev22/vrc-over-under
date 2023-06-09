@@ -4,7 +4,7 @@ import urandom
 
 # ------------------------
 # Code by Eric & Peter (mostly Eric)
-# Team 75477F 'Frij'
+# Team 75477M 'Frij'
 # Over Under 2023-2024
 # ------------------------
 
