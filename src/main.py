@@ -129,7 +129,7 @@ def team_choosing():
         team_choosing()
     elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
         brain.screen.set_fill_color(Color.White)
-        brain.screen.draw_rectangle(30, 180, 450, 60)
+        brain.screen.draw_rectangle(0, 180, 450, 60)
         #todo add file to the sd-card on vex brain
         #brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
         return team_position
