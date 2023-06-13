@@ -43,9 +43,12 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, M
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
 
+
 # Pneumatics
 elevation_a = DigitalOut(brain.three_wire_port.a)
 elevation_b = DigitalOut(brain.three_wire_port.b)
+
+expansion_c = DigitalOut(brain.three_wire_port.c)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -67,6 +70,9 @@ inertial.set_heading(0, DEGREES)
 
 elevation_a.set(True)
 elevation_b.set(True)
+
+expansion_c.set(False)
+expansion_status = 0
 
 # team and side choosing
 # - 1 for defence and 2 for offence
@@ -172,7 +178,7 @@ def vision(object):
 def punch(times):
     puncher.spin_for(FORWARD, 300, DEGREES, wait=True)
     while not controller_1.buttonA.pressing():
-        if -5< controller_1.axis1.position() <5 or -5< controller_1.axis2.position() <5:
+        if not (-5< controller_1.axis1.position() <5 or -5< controller_1.axis2.position() <5):
             return
         wait(20, MSEC)
     puncher.spin_for(FORWARD, 60, DEGREES, wait=True)
@@ -242,6 +248,15 @@ def driver_control():
             intake.spin(REVERSE)
         else:
             intake.stop()
+    #expansion control
+        if controller_1.buttonX.pressing():
+            if expansion_status == 0:
+                expansion_status = 1
+            elif expansion_status == 1:
+                expansion_status = 0
+            while controller_1.buttonX.pressing():
+                wait(10,MSEC)
+        expansion_c.set(expansion_status)
             
 
 
