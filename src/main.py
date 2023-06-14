@@ -47,7 +47,6 @@ gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle o
 # Pneumatics
 elevation_a = DigitalOut(brain.three_wire_port.a)
 elevation_b = DigitalOut(brain.three_wire_port.b)
-
 expansion_c = DigitalOut(brain.three_wire_port.c)
 
 # wait for rotation sensor to fully initialize
@@ -61,6 +60,7 @@ left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
 intake.set_stopping(HOLD)
+puncher.set_stopping(HOLD)
 
 team_position = " "
 
@@ -137,9 +137,9 @@ def team_choosing():
         brain.screen.set_fill_color(Color.White)
         brain.screen.draw_rectangle(0, 180, 450, 60)
         #todo add file to the sd-card on vex brain
-        #brain.screen.draw_image_from_file("teamlogo_vexbrain.png", x=162, y=180)
+        #brain.screen.draw_image_from_file("frij_transparent_black_brain.png", x=162, y=180)
         return team_position
-    
+
 # turing def
 # - Direction = RIGHT or LEFT
 def drivetrain_turn(target_angle, Direction):
@@ -235,7 +235,10 @@ def driver_control():
             right_drive_smart.spin(FORWARD)
     # puncher control 
         if controller_1.buttonR1.pressing():
-            punch(1)
+        #    punch(1)
+            puncher.spin(FORWARD)
+        else:
+            puncher.stop()
     # elevation control
         if controller_1.buttonR2.pressing():
             elevation(False)
@@ -257,9 +260,6 @@ def driver_control():
             while controller_1.buttonX.pressing():
                 wait(10,MSEC)
         expansion_c.set(expansion_status)
-            
-
-
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
