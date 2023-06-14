@@ -62,6 +62,8 @@ right_drive_smart_speed = 0
 intake.set_stopping(HOLD)
 puncher.set_stopping(HOLD)
 
+puncher.set_velocity(100,PERCENT)
+
 team_position = " "
 
 inertial.calibrate()
@@ -236,7 +238,7 @@ def driver_control():
     # puncher control 
         if controller_1.buttonR1.pressing():
         #    punch(1)
-            puncher.spin(FORWARD)
+            puncher.spin_for(FORWARD, 360, DEGREES, Wait = True)
         else:
             puncher.stop()
     # elevation control
