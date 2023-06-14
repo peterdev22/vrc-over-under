@@ -63,6 +63,7 @@ intake.set_stopping(HOLD)
 puncher.set_stopping(HOLD)
 
 puncher.set_velocity(100,PERCENT)
+puncher.set_position(0,DEGREES)
 
 team_position = " "
 
