@@ -33,7 +33,7 @@ right_motor_b = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
 right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
-puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
+puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, False)
 intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
 
 # Drivetrain
@@ -64,6 +64,7 @@ puncher.set_stopping(HOLD)
 
 puncher.set_velocity(100,PERCENT)
 puncher.set_position(0,DEGREES)
+puncher.set_torque(100,PERCENT)
 
 team_position = " "
 
@@ -197,8 +198,23 @@ def elevation(status):
 
 # Autonomous def
 def autonomous():
+    #defencive
     if team_position == "RED_1" or team_position == "BLUE_1":
         controller_1.screen.print(team_position + " 1")
+        drivetrain.drive_for(FORWARD, 20, MM)
+        drivetrain_turn(45, RIGHT)
+        drivetrain.drive_for(FORWARD, 20, MM)
+        intake.spin_for(REVERSE, 360, DEGREES, wait = True)
+        drivetrain.drive_for(REVERSE, 20, MM)
+        drivetrain_turn(135, RIGHT)
+        drivetrain.drive_for(FORWARD, 20, MM)
+        drivetrain_turn(90, right)
+        drivetrain.drive_for(FORWARD, 20, MM)
+        intake.spin_for(FORWARD, 360, DEGREES, wait = True)
+        drivetrain.drive_for(REVERSE, 20, MM)
+        drivetrain_turn(45, LEFT)
+        elevation(True)
+        drivetrain.drive_for(FORWARD, 20, MM)
         
     elif team_position == "RED_2" or team_position == "BLUE_2":
         controller_1.screen.print(team_position + " 2")
@@ -239,7 +255,7 @@ def driver_control():
     # puncher control 
         if controller_1.buttonR1.pressing():
         #    punch(1)
-            puncher.spin_for(FORWARD, 360, DEGREES, Wait = True)
+            puncher.spin_for(FORWARD, 1080, DEGREES, Wait = True)
         else:
             puncher.stop()
     # elevation control
