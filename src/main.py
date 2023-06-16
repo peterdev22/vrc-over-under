@@ -13,6 +13,7 @@ import urandom
 # - intake: #7
 # - inertial sensor: #3
 # - gps sensor: #9
+# - optial sensot: #8
 # - elevation cylinders: #a; #b
 
 
@@ -42,6 +43,7 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, M
 # Sensor
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
+optical = Optical(Ports.PORT8)
 
 
 # Pneumatics
@@ -255,6 +257,9 @@ def driver_control():
     # puncher control 
         if controller_1.buttonR1.pressing():
         #    punch(1)
+            puncher.spin_for(FORWARD, 1080, DEGREES, Wait = True)
+        elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
+            wait(50, MSEC)
             puncher.spin_for(FORWARD, 1080, DEGREES, Wait = True)
         else:
             puncher.stop()
