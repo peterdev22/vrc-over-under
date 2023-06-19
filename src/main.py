@@ -82,68 +82,55 @@ expansion_status = False
 # team and side choosing
 # - 1 for defence and 2 for offence
 def team_choosing():
-    wait(500,MSEC)
-    brain.screen.clear_screen()
-    brain.screen.set_font(FontType.MONO15)
-    brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(-1, -1, 241, 121)
-    brain.screen.set_cursor(4,15)
-    brain.screen.print("Red 1")
-    brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(240, -1, 241, 121)
-    brain.screen.set_cursor(4,49)
-    brain.screen.print("Red 2")
-    brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(-1, 120, 241, 121)
-    brain.screen.set_cursor(12,14)
-    brain.screen.print("Blue 1")
-    brain.screen.set_fill_color(Color.BLUE)
-    brain.screen.draw_rectangle(240, 120, 241, 121)
-    brain.screen.set_cursor(12, 48)
-    brain.screen.print("Blue 2")
-    while not brain.screen.pressing():
-        wait(5,MSEC)
-    while brain.screen.x_position() == 240 or brain.screen.x_position() == 120:
-        wait(5,MSEC)
-    if brain.screen.x_position() < 240 and brain.screen.y_position() < 120:
-        brain.screen.set_fill_color(Color.RED)
-        team_position = "RED_1"
-    elif brain.screen.x_position() > 240 and brain.screen.y_position() < 120:
-        brain.screen.set_fill_color(Color.RED)
-        team_position = "RED_2"
-    elif brain.screen.x_position() < 240 and brain.screen.y_position() > 120:
-        brain.screen.set_fill_color(Color.BLUE)
-        team_position = "BLUE_1"
-    elif brain.screen.x_position() > 240 and brain.screen.y_position() > 120:
-        brain.screen.set_fill_color(Color.BLUE)
-        team_position = "BLUE_2"
-    brain.screen.draw_rectangle(0, 0, 480, 240)
-    brain.screen.set_font(FontType.MONO60)
-    print_text = "75477F " + team_position
-    brain.screen.set_cursor(2, 2)
-    brain.screen.print(print_text)
-    if "RED" in team_position:
-        brain.screen.set_fill_color(Color.BLUE)
-    elif "BLUE" in team_position:
-        brain.screen.set_fill_color(Color.RED)
-    brain.screen.draw_rectangle(30, 180, 180, 60)
-    brain.screen.set_cursor(4, 3)
-    brain.screen.print("Back")
-    brain.screen.draw_rectangle(270, 180, 180, 60)
-    brain.screen.set_cursor(4, 10)
-    brain.screen.print("Check")
-    while brain.screen.pressing():
-        wait(5,MSEC)
-    while not (brain.screen.pressing() and((210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180) or (450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180))) :
-        wait(5,MSEC)
-    if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
-        team_choosing()
-    elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
-        brain.screen.set_fill_color(Color.WHITE)
-        brain.screen.draw_rectangle(0, 180, 480, 60)
-        #todo add file to the sd-card on vex brain
-        #brain.screen.draw_image_from_file("frij_transparent_black_brain.png", x=162, y=180)
-        return team_position
+    choosing = True
+    selected = False
+    color = ""
+    team_position = ""
+    while choosing:
+        if 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
+            brain.screen.draw_image_from_file("red_begin.png", x=0, y=0)
+            color = "red"
+            selected = False
+        elif 249 <= brain.screen.x_position() <= 351 and 8 <= brain.screen.y_position() <= 26:
+            brain.screen.draw_image_from_file("blue_begin.png", x=0, y=0)
+            color = "blue"
+            selected = False
+        elif 358 <= brain.screen.x_position() <= 461 and 8 <= brain.screen.y_position() <= 26:
+            brain.screen.draw_image_from_file("skill_begin.png", x=0, y=0)
+            color = "skill"
+            selected = True
+            team_position = "skill"
+        elif color == "red":
+            if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
+                brain.screen.draw_image_from_file("red_offence.png", x=0, y=0)
+                selected = True
+                team_position = "red_offence"
+                while 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
+                    wait(20, MSEC)
+            elif 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
+                brain.screen.draw_image_from_file("red_defence.png", x=0, y=0)
+                selected = True
+                team_position = "red_defence"
+                while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
+                    wait(20, MSEC)
+        elif color == "blue":
+            if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
+                brain.screen.draw_image_from_file("blue_offence.png", x=0, y=0)
+                selected = True
+                team_position = "blue_offence"
+                while 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
+                    wait(20, MSEC)
+            elif 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
+                brain.screen.draw_image_from_file("blue_defence.png", x=0, y=0)
+                selected = True
+                team_position = "blue_defence"
+                while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
+                    wait(20, MSEC)
+        elif 19 <= brain.screen.x_position() <= 138 and 120 <= brain.screen.y_position() <= 142 and selected:
+            brain.screen.draw_image_from_file(team_position + "_confirmed.png", x=0, y=0)
+            selected = False
+            choosing = False
+
 
 # turing def
 # - Direction = RIGHT or LEFT
@@ -200,7 +187,7 @@ def elevation(status):
 # Autonomous def
 def autonomous():
     #defencive
-    if team_position == "RED_1" or team_position == "BLUE_1":
+    if team_position == "red_defence" or team_position == "blue_defence":
         controller_1.screen.print(team_position + " 1")
         drivetrain.drive_for(FORWARD, 20, MM)
         drivetrain_turn(45, RIGHT)
@@ -217,7 +204,7 @@ def autonomous():
         elevation(True)
         drivetrain.drive_for(FORWARD, 20, MM)
         
-    elif team_position == "RED_2" or team_position == "BLUE_2":
+    elif team_position == "red_offence" or team_position == "blue_offence":
         controller_1.screen.print(team_position + " 2")
     else:
         controller_1.screen.print(team_position + " none")
