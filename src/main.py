@@ -64,9 +64,8 @@ right_drive_smart_speed = 0
 intake.set_stopping(HOLD)
 puncher.set_stopping(HOLD)
 
-puncher.set_velocity(100,PERCENT)
+puncher.set_velocity(70,PERCENT)
 puncher.set_position(0,DEGREES)
-puncher.set_torque(100,PERCENT)
 
 team_position = " "
 
@@ -78,7 +77,7 @@ elevation_a.set(True)
 elevation_b.set(True)
 
 expansion_c.set(False)
-expansion_status = 0
+expansion_status = False
 
 # team and side choosing
 # - 1 for defence and 2 for offence
@@ -140,8 +139,8 @@ def team_choosing():
     if 210 >= brain.screen.x_position() >= 30 and brain.screen.y_position() >= 180:
         team_choosing()
     elif 450 >= brain.screen.x_position() >= 270 and brain.screen.y_position() >= 180:
-        brain.screen.set_fill_color(Color.White)
-        brain.screen.draw_rectangle(0, 180, 450, 60)
+        brain.screen.set_fill_color(Color.WHITE)
+        brain.screen.draw_rectangle(0, 180, 480, 60)
         #todo add file to the sd-card on vex brain
         #brain.screen.draw_image_from_file("frij_transparent_black_brain.png", x=162, y=180)
         return team_position
@@ -257,10 +256,11 @@ def driver_control():
     # puncher control 
         if controller_1.buttonR1.pressing():
         #    punch(1)
-            puncher.spin_for(FORWARD, 1080, DEGREES, Wait = True)
-        elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
+            puncher.spin_for(REVERSE, 1080, DEGREES, wait = True)
+            puncher.spin_to_position(0,DEGREES)
+            ''' elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
             wait(50, MSEC)
-            puncher.spin_for(FORWARD, 1080, DEGREES, Wait = True)
+            puncher.spin_for(REVERSE, 1080, DEGREES, Wait = True)'''
         else:
             puncher.stop()
     # elevation control
@@ -277,10 +277,7 @@ def driver_control():
             intake.stop()
     #expansion control
         if controller_1.buttonX.pressing():
-            if expansion_status == 0:
-                expansion_status = 1
-            elif expansion_status == 1:
-                expansion_status = 0
+            expansion_status = not expansion_status
             while controller_1.buttonX.pressing():
                 wait(10,MSEC)
         expansion_c.set(expansion_status)
