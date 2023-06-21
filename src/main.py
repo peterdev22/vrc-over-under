@@ -10,7 +10,7 @@ import urandom
 
 # Wiring Guide
 # - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
-# - intake: #7
+# - intake: #7, puncher: #4
 # - inertial sensor: #3
 # - gps sensor: #9
 # - optial sensot: #8
@@ -38,7 +38,7 @@ puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, False)
 intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
 
 # Drivetrain
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 1.6666666666666667)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 5/3)
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
@@ -244,7 +244,7 @@ def driver_control():
         if controller_1.buttonR1.pressing():
         #    punch(1)
             puncher.spin_for(REVERSE, 1080, DEGREES, wait = True)
-            puncher.spin_to_position(0,DEGREES)
+            puncher.spin_to_position(0,DEGREES, wait = False)
             ''' elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
             wait(50, MSEC)
             puncher.spin_for(REVERSE, 1080, DEGREES, Wait = True)'''
@@ -263,16 +263,18 @@ def driver_control():
         else:
             intake.stop()
     #expansion control
+    '''
         if controller_1.buttonX.pressing():
             expansion_status = not expansion_status
             while controller_1.buttonX.pressing():
                 wait(10,MSEC)
         expansion_c.set(expansion_status)
+    '''
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
 #choose team
-team_position = team_choosing()
+#todo team_position = team_choosing()
 
 # Competition functions for the driver control & autonomous tasks
 competition = Competition(driver_control, autonomous)
