@@ -251,7 +251,7 @@ def driver_control():
     wait(20, MSEC)
 
 #choose team
-todo team_position = team_choosing()
+team_position = team_choosing()
 
 # Competition functions for the driver control & autonomous tasks
 competition = Competition(driver_control, autonomous)
