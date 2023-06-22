@@ -130,6 +130,7 @@ def team_choosing():
             brain.screen.draw_image_from_file(team_position + "_confirmed.png", x=0, y=0)
             selected = False
             choosing = False
+            return team_position
 
 
 # turing def
@@ -165,18 +166,6 @@ def goto(x_cord, y_cord):
 # todo vision sensor def
 def vision(object):
     pass
-
-# punch def
-def punch(times):
-    puncher.spin_for(FORWARD, 300, DEGREES, wait=True)
-    while not controller_1.buttonA.pressing():
-        if not (-5< controller_1.axis1.position() <5 or -5< controller_1.axis2.position() <5):
-            return
-        wait(20, MSEC)
-    puncher.spin_for(FORWARD, 60, DEGREES, wait=True)
-    times -= 1
-    if times > 0:
-        punch(times)
         
 # elevation def
 # - status = True(extend) or False(retract)
@@ -187,27 +176,15 @@ def elevation(status):
 # Autonomous def
 def autonomous():
     #defencive
+    controller_1.screen.print(team_position)
     if team_position == "red_defence" or team_position == "blue_defence":
-        controller_1.screen.print(team_position + " 1")
-        drivetrain.drive_for(FORWARD, 20, MM)
-        drivetrain_turn(45, RIGHT)
-        drivetrain.drive_for(FORWARD, 20, MM)
-        intake.spin_for(REVERSE, 360, DEGREES, wait = True)
-        drivetrain.drive_for(REVERSE, 20, MM)
-        drivetrain_turn(135, RIGHT)
-        drivetrain.drive_for(FORWARD, 20, MM)
-        drivetrain_turn(90, right)
-        drivetrain.drive_for(FORWARD, 20, MM)
-        intake.spin_for(FORWARD, 360, DEGREES, wait = True)
-        drivetrain.drive_for(REVERSE, 20, MM)
-        drivetrain_turn(45, LEFT)
-        elevation(True)
-        drivetrain.drive_for(FORWARD, 20, MM)
-        
+        pass      
     elif team_position == "red_offence" or team_position == "blue_offence":
-        controller_1.screen.print(team_position + " 2")
+        pass
+    elif team_position == "skill":
+        pass
     else:
-        controller_1.screen.print(team_position + " none")
+        controller_1.screen.print("team position not selected")
 
 #  Driver Control def
 def driver_control():
