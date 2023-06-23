@@ -79,17 +79,15 @@ elevation_b.set(True)
 expansion_c.set(False)
 expansion_status = False
 
+brain.screen.draw_image_from_file("begin.png", 0, 0)
 # team and side choosing
-# - 1 for defence and 2 for offence
 def team_choosing():
     choosing = True
     selected = False
     color = ""
     team_position = ""
     while choosing:
-        if color == "" and team_choosing == "":
-            brain.screen.draw_image_from_file("red_begin.png", 0, 0)
-        elif 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
+        if 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
             brain.screen.draw_image_from_file("red_begin.png", 0, 0)
             color = "red"
             selected = False
