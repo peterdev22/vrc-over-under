@@ -88,46 +88,46 @@ def team_choosing():
     team_position = ""
     while choosing:
         if 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
-            brain.screen.draw_image_from_file("red_begin.png", x=0, y=0)
+            brain.screen.draw_image_from_file("red_begin.png", 0, 0)
             color = "red"
             selected = False
         elif 249 <= brain.screen.x_position() <= 351 and 8 <= brain.screen.y_position() <= 26:
-            brain.screen.draw_image_from_file("blue_begin.png", x=0, y=0)
+            brain.screen.draw_image_from_file("blue_begin.png", 0, 0)
             color = "blue"
             selected = False
         elif 358 <= brain.screen.x_position() <= 461 and 8 <= brain.screen.y_position() <= 26:
-            brain.screen.draw_image_from_file("skill_begin.png", x=0, y=0)
+            brain.screen.draw_image_from_file("skill_begin.png", 0, 0)
             color = "skill"
             selected = True
             team_position = "skill"
         elif color == "red":
             if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
-                brain.screen.draw_image_from_file("red_offence.png", x=0, y=0)
+                brain.screen.draw_image_from_file("red_offence.png", 0, 0)
                 selected = True
                 team_position = "red_offence"
                 while 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
                     wait(20, MSEC)
             elif 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
-                brain.screen.draw_image_from_file("red_defence.png", x=0, y=0)
+                brain.screen.draw_image_from_file("red_defence.png", 0, 0)
                 selected = True
                 team_position = "red_defence"
                 while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
                     wait(20, MSEC)
         elif color == "blue":
             if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
-                brain.screen.draw_image_from_file("blue_offence.png", x=0, y=0)
+                brain.screen.draw_image_from_file("blue_offence.png", 0, 0)
                 selected = True
                 team_position = "blue_offence"
                 while 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
                     wait(20, MSEC)
             elif 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
-                brain.screen.draw_image_from_file("blue_defence.png", x=0, y=0)
+                brain.screen.draw_image_from_file("blue_defence.png", 0, 0)
                 selected = True
                 team_position = "blue_defence"
                 while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
                     wait(20, MSEC)
         elif 19 <= brain.screen.x_position() <= 138 and 120 <= brain.screen.y_position() <= 142 and selected:
-            brain.screen.draw_image_from_file(team_position + "_confirmed.png", x=0, y=0)
+            brain.screen.draw_image_from_file(team_position + "_confirmed.png",  0,  0)
             selected = False
             choosing = False
             return team_position
