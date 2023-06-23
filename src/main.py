@@ -87,7 +87,9 @@ def team_choosing():
     color = ""
     team_position = ""
     while choosing:
-        if 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
+        if color == "" and team_choosing == "":
+            brain.screen.draw_image_from_file("red_begin.png", 0, 0)
+        elif 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
             brain.screen.draw_image_from_file("red_begin.png", 0, 0)
             color = "red"
             selected = False
