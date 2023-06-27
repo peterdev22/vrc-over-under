@@ -10,7 +10,7 @@ import urandom
 
 # Wiring Guide
 # - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
-# - intake: #7, puncher: #4
+# - intake: #7, puncher: #4, #14
 # - inertial sensor: #3
 # - gps sensor: #9
 # - optial sensot: #8
@@ -34,7 +34,9 @@ right_motor_b = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
 right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
-puncher = Motor(Ports.PORT4, GearSetting.RATIO_36_1, False)
+puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
+puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
+puncher = MotorGroup(puncher_a, puncher_b)
 intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
 
 # Drivetrain
@@ -79,7 +81,7 @@ elevation_b.set(True)
 expansion_c.set(False)
 expansion_status = False
 
-brain.screen.draw_image_from_file("begin.png", 0, 0)
+brain.screen.draw_image_from_file("begin.png", 0, 4)
 # team and side choosing
 def team_choosing():
     choosing = True
@@ -88,32 +90,38 @@ def team_choosing():
     team_position = ""
     while choosing:
         if 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
-            brain.screen.draw_image_from_file("red_begin.png", 0, 0)
+            brain.screen.draw_image_from_file("red_begin.png", 0, 4)
             color = "red"
             selected = False
+            while 139 <= brain.screen.x_position() <= 240 and 8 <= brain.screen.y_position() <= 26:
+                wait(20, MSEC)
         elif 249 <= brain.screen.x_position() <= 351 and 8 <= brain.screen.y_position() <= 26:
             brain.screen.draw_image_from_file("blue_begin.png", 0, 0)
             color = "blue"
             selected = False
+            while 249 <= brain.screen.x_position() <= 351 and 8 <= brain.screen.y_position() <= 26:
+                wait(20, MSEC)
         elif 358 <= brain.screen.x_position() <= 461 and 8 <= brain.screen.y_position() <= 26:
             brain.screen.draw_image_from_file("skill_begin.png", 0, 0)
             color = "skill"
             selected = True
             team_position = "skill"
-        elif color == "red":
+            while 358 <= brain.screen.x_position() <= 461 and 8 <= brain.screen.y_position() <= 26:
+                wait(20, MSEC)
+        elif color == "red" and not selected:
             if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
-                brain.screen.draw_image_from_file("red_offence.png", 0, 0)
+                brain.screen.draw_image_from_file("red_offence.png", 0, 4)
                 selected = True
                 team_position = "red_offence"
                 while 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
                     wait(20, MSEC)
             elif 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
-                brain.screen.draw_image_from_file("red_defence.png", 0, 0)
+                brain.screen.draw_image_from_file("red_defence.png", 0, 4)
                 selected = True
                 team_position = "red_defence"
                 while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
                     wait(20, MSEC)
-        elif color == "blue":
+        elif color == "blue" and not selected:
             if 19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74:
                 brain.screen.draw_image_from_file("blue_offence.png", 0, 0)
                 selected = True
@@ -126,12 +134,12 @@ def team_choosing():
                 team_position = "blue_defence"
                 while 19 <= brain.screen.x_position() <= 138 and 85 <= brain.screen.y_position() <= 107:
                     wait(20, MSEC)
-        elif 19 <= brain.screen.x_position() <= 138 and 120 <= brain.screen.y_position() <= 142 and selected:
+        elif (19 <= brain.screen.x_position() <= 138 and 120 <= brain.screen.y_position() <= 142 and selected and color == "red" or color == "blue") or (19 <= brain.screen.x_position() <= 138 and 52 <= brain.screen.y_position() <= 74 and selected and color == "skill"):
+            brian.screen.clear()
             brain.screen.draw_image_from_file(team_position + "_confirmed.png",  0,  0)
             selected = False
             choosing = False
             return team_position
-
 
 # turing def
 # - Direction = RIGHT or LEFT
@@ -220,8 +228,9 @@ def driver_control():
     # puncher control 
         if controller_1.buttonR1.pressing():
         #    punch(1)
-            puncher.spin_for(REVERSE, 1080, DEGREES, wait = True)
-            puncher.spin_to_position(0,DEGREES, wait = False)
+            #puncher.spin_for(REVERSE, 360, DEGREES, wait = True)
+            #puncher.spin_to_position(0,DEGREES, wait = False)
+            puncher.spin(REVERSE)
             ''' elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
             wait(50, MSEC)
             puncher.spin_for(REVERSE, 1080, DEGREES, Wait = True)'''
@@ -251,7 +260,7 @@ def driver_control():
     wait(20, MSEC)
 
 #choose team
-team_position = team_choosing()
+#team_position = team_choosing()
 
 # Competition functions for the driver control & autonomous tasks
 competition = Competition(driver_control, autonomous)
