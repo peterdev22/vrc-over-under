@@ -10,7 +10,7 @@ import urandom
 
 # Wiring Guide
 # - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
-# - intake: #7, puncher: #4, #14
+# - puncher: #4, #14
 # - inertial sensor: #3
 # - gps sensor: #9
 # - optial sensot: #8
@@ -37,7 +37,7 @@ right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
 puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
 puncher = MotorGroup(puncher_a, puncher_b)
-intake = Motor(Ports.PORT7, GearSetting.RATIO_6_1, True)
+
 
 # Drivetrain
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 5/3)
@@ -51,7 +51,8 @@ optical = Optical(Ports.PORT8)
 # Pneumatics
 elevation_a = DigitalOut(brain.three_wire_port.a)
 elevation_b = DigitalOut(brain.three_wire_port.b)
-expansion_c = DigitalOut(brain.three_wire_port.c)
+claw_c = DigitalOut(brain.three_wire_port.c)
+expansion_e = DigitalOut(brain.three_wire_port.e)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
@@ -237,13 +238,11 @@ def driver_control():
             right_drive_smart.spin(FORWARD)
     # puncher control 
         if controller_1.buttonR1.pressing():
-        #    punch(1)
-            #puncher.spin_for(REVERSE, 360, DEGREES, wait = True)
-            #puncher.spin_to_position(0,DEGREES, wait = False)
-            puncher.spin(REVERSE)
-            ''' elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            puncher.spin_to_position(0,DEGREES, wait = False)
+        elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
             wait(50, MSEC)
-            puncher.spin_for(REVERSE, 1080, DEGREES, Wait = True)'''
+            puncher.spin_for(REVERSE, 180, DEGREES, Wait = True)
         else:
             puncher.stop()
     # elevation control
@@ -253,11 +252,9 @@ def driver_control():
             elevation(True)
     #intake control
         if controller_1.buttonL1.pressing():
-            intake.spin(FORWARD)
-        elif controller_1.buttonL2.pressing():
-            intake.spin(REVERSE)
+            claw_c.set(True)
         else:
-            intake.stop()
+            claw_c.set(False)
     #expansion control
     '''
         if controller_1.buttonX.pressing():
