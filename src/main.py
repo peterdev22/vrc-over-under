@@ -9,11 +9,11 @@ import urandom
 # ------------------------
 
 # Wiring Guide
-# - drivetrain: left a: #1;  left b: #6;  left c: #10;  right a: #11;  right b: #16  right c: #20;
+# - drivetrain: left a: #1;  left b: #11;  left c: #12;  right a: #10;  right b: #19  right c: #21;
 # - puncher: #4, #14
 # - inertial sensor: #3
 # - gps sensor: #9
-# - optial sensot: #8
+# - optial sensot: #7
 # - elevation cylinders: #a; #b
 
 
@@ -25,13 +25,13 @@ controller_1 = Controller(PRIMARY)
 
 # Motors (A front, C back)
 left_motor_a = Motor(Ports.PORT1, GearSetting.RATIO_6_1, True)
-left_motor_b = Motor(Ports.PORT6, GearSetting.RATIO_6_1, True)
-left_motor_c = Motor(Ports.PORT10, GearSetting.RATIO_6_1, True)
+left_motor_b = Motor(Ports.PORT11, GearSetting.RATIO_6_1, True)
+left_motor_c = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b, left_motor_c)
 
-right_motor_a = Motor(Ports.PORT11, GearSetting.RATIO_6_1, False)
-right_motor_b = Motor(Ports.PORT16, GearSetting.RATIO_6_1, False)
-right_motor_c = Motor(Ports.PORT20, GearSetting.RATIO_6_1, False)
+right_motor_a = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False)
+right_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_6_1, False)
+right_motor_c = Motor(Ports.PORT21, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
 puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
@@ -45,7 +45,7 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, M
 # Sensor
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
-optical = Optical(Ports.PORT8)
+optical = Optical(Ports.PORT7)
 
 
 # Pneumatics
@@ -64,11 +64,11 @@ right_drive_smart_stopped = False
 left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
-intake.set_stopping(HOLD)
 puncher.set_stopping(HOLD)
 
 puncher.set_velocity(70,PERCENT)
 puncher.set_position(0,DEGREES)
+puncher.spin_for(REVERSE, 135, DEGREES, wait = False)
 
 team_position = " "
 
@@ -79,7 +79,7 @@ inertial.set_heading(0, DEGREES)
 elevation_a.set(True)
 elevation_b.set(True)
 
-expansion_c.set(False)
+expansion_e.set(False)
 expansion_status = False
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
@@ -240,9 +240,8 @@ def driver_control():
         if controller_1.buttonR1.pressing():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
-        elif 110.00 <= optical.hue()<=130.00 or 20.00 <= optical.hue()<=60.00 or 280.00 <= optical.hue()<=360.00:
-            wait(50, MSEC)
-            puncher.spin_for(REVERSE, 180, DEGREES, Wait = True)
+        elif optical.is_near_object():
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         else:
             puncher.stop()
     # elevation control
