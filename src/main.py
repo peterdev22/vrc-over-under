@@ -12,8 +12,9 @@ import urandom
 # - drivetrain: left a: #1;  left b: #11;  left c: #12;  right a: #10;  right b: #19  right c: #21;
 # - puncher: #4, #14
 # - inertial sensor: #3
-# - gps sensor: #9
-# - optial sensot: #7
+# - gps sensor: #8
+# - optial sensor: #7
+# - distance sensor:#18
 # - elevation cylinders: #a; #b
 
 
@@ -39,15 +40,17 @@ puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
 puncher = MotorGroup(puncher_a, puncher_b)
 
 # Drivetrain
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 320, 255, MM, 5/3)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
+
 
 #vision sensor sig
 vision__G_TRIBALL = Signature(1, -3911, -319, -2115,-4709, -947, -2828,0.9, 0)
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT9, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
+distance = Distance(Ports.PORT18)
 vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 
 # Pneumatics
@@ -184,22 +187,35 @@ def goto(x_cord, y_cord):
             drivetrain.turn_to_heading(angle, DEGREES)
             drivetrain.drive_for(FORWARD, a, MM)
 
-# todo vision sensor def
+# vision sensor def
 def obj_looking(object): 
     controller_1.screen.set_cursor(1,1)
     if vision.take_snapshot(vision__G_TRIBALL) is not None:
         x_cord = vision.largest_object().centerX
         y_cord = vision.largest_object().centerY
         controller_1.screen.print("x: ", x_cord, "y: ", y_cord)
-        if x_cord <= 120:
-            drivetrain.turn(LEFT, 10, PERCENT)
-        elif x_cord >= 185:
-            drivetrain.turn(RIGHT, 10, PERCENT)
-        else:
-            drivetrain.stop()
+        while not 150 <= x_cord <= 165:
+            while x_cord <= 150:
+                drivetrain.turn(LEFT, 5, PERCENT)
+            while x_cord >= 165:
+                drivetrain.turn(RIGHT, 5, PERCENT)
+        drivetrain.stop()
     else:
         controller_1.screen.print("object not found")
         
+# triball chasing def
+def triball_chasing():
+    #obj_looking(vision__G_TRIBALL)
+    claw_c.set(True)
+    while distance.object_distance(MM)>60:
+        drivetrain.drive(FORWARD, distance.object_distance(MM)/10, PERCENT)
+        if not distance.is_object_detected():
+            break
+    drivetrain.stop()
+    controller_1.screen.print(distance.object_distance(MM))
+    claw_c.set(False)
+    
+    
         
 # elevation def
 # - status = True(extend) or False(retract)
@@ -222,7 +238,7 @@ def autonomous():
 
 #  Driver Control def
 def driver_control():
-    global left_drive_smart_stopped, right_drive_smart_stopped, claw_stopped
+    global left_drive_smart_stopped, right_drive_smart_stopped
     # Process every 20 milliseconds
     while True:
         controller_1.screen.clear_screen()
@@ -231,7 +247,7 @@ def driver_control():
         rotate = controller_1.axis4.position()*0.6
 
         left_drive_smart_speed = forward + rotate
-        right_drive_smart_speed = forward - rotate
+        right_drive_smart_speed = (forward - rotate)
 
         if left_drive_smart_speed < 5 and left_drive_smart_speed > -5:
             if left_drive_smart_stopped:
@@ -266,7 +282,7 @@ def driver_control():
         else:
             elevation(True)
     #intake control
-        if controller_1.buttonL1.pressing():
+        if controller_1.buttonL1.pressing():            
             claw_c.set(True)
         else:
             claw_c.set(False)
