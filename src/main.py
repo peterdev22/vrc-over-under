@@ -156,10 +156,10 @@ def team_choosing():
                 wait(5, MSEC)
         wait(5, MSEC)
 
-
 # turing def
 # - Direction = RIGHT or LEFT
 def drivetrain_turn(target_angle, Direction):
+    inertial.set_heading(0, DEGREES)
     drivetrain.turn(Direction)
     current_angle = inertial.heading(DEGREES)
     while not target_angle + 1 > current_angle > target_angle:
@@ -212,27 +212,36 @@ def triball_chasing():
         if not distance.is_object_detected():
             break
     drivetrain.stop()
-    controller_1.screen.print(distance.object_distance(MM))
     claw_c.set(False)
-    
-    
-        
+      
 # elevation def
 # - status = True(extend) or False(retract)
 def elevation(status):
     elevation_a.set(status)
     elevation_b.set(status)
-
+             
 # Autonomous def
 def autonomous():
     #defencive
     controller_1.screen.print(team_position)
     if team_position == "red_defence" or team_position == "blue_defence":
-        pass      
+        claw_c.set(True)
+        puncher.spin_for(REVERSE, 180, DEGREES)
+        drivetrain_turn(315, LEFT)
+        mov_distance = distance.object_distance(MM)
+        drivetrain.drive_for(FORWARD, distance.object_distance(MM)-30, MM, 80, PERCENT, wait = True)
+        drivetrain.stop()
+        claw_c.set(False)
+        wait(500, MSEC)
+        drivetrain.drive_for(REVERSE, mov_distance-30, MM, 80, PERCENT, wait = True)
+        drivetrain_turn(75, RIGHT)
+        drivetrain.drive_for(FORWARD, 900, MM, 70, PERCENT, wait = False)
+        claw_c.set(True)
+        
     elif team_position == "red_offence" or team_position == "blue_offence":
         pass
     elif team_position == "skill":
-        obj_looking("test")
+        pass
     else:
         controller_1.screen.print("team position not selected")
 
