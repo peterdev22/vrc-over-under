@@ -57,7 +57,7 @@ vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 elevation_a = DigitalOut(brain.three_wire_port.a)
 elevation_b = DigitalOut(brain.three_wire_port.b)
 claw_c = DigitalOut(brain.three_wire_port.c)
-expansion_e = DigitalOut(brain.three_wire_port.e)
+shooter_d = DigitalOut(brain.three_wire_port.d)
 
 # wait for rotation sensor to fully initialize
 wait(30, MSEC)
