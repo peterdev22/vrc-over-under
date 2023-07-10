@@ -84,8 +84,7 @@ inertial.set_heading(0, DEGREES)
 elevation_a.set(True)
 elevation_b.set(True)
 
-expansion_e.set(False)
-expansion_status = False
+shooter_d.set(False)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 # team and side choosing
@@ -293,8 +292,13 @@ def driver_control():
     #intake control
         if controller_1.buttonL1.pressing():            
             claw_c.set(True)
+            wait(20, MSEC)
+            shooter_d.set(True)
         else:
+            shooter_d.set(False)
+            wait(20, MSEC)
             claw_c.set(False)
+            
     #expansion control
     '''
         if controller_1.buttonX.pressing():
