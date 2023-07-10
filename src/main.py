@@ -163,7 +163,7 @@ def drivetrain_turn(target_angle, Direction):
     current_angle = inertial.heading(DEGREES)
     while not target_angle + 1 > current_angle > target_angle:
         if Direction == LEFT:
-            turn_angle = current_angle - target_angle
+            turn_angle = current_angle - (360 - target_angle)
         else:
             turn_angle = target_angle - current_angle
         if turn_angle < 0:
@@ -223,22 +223,51 @@ def elevation(status):
 def autonomous():
     #defencive
     controller_1.screen.print(team_position)
+    # - start at the LEFT SIDE of the goal!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
+        # - parallel to the match load bar, right front wheel on the cross of four tile, pre_load in claw
+        drivetrain.drive_for(FORWARD, 265, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
         claw_c.set(True)
-        puncher.spin_for(REVERSE, 180, DEGREES)
-        drivetrain_turn(315, LEFT)
-        mov_distance = distance.object_distance(MM)
-        drivetrain.drive_for(FORWARD, distance.object_distance(MM)-30, MM, 80, PERCENT, wait = True)
-        drivetrain.stop()
+        drivetrain.drive_for(FORWARD, 510, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(90, RIGHT)
+        drivetrain.drive_for(FORWARD, 870, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(90, LEFT)
+        drivetrain.drive_for(FORWARD, 870, MM, 60, PERCENT, wait = True)
         claw_c.set(False)
-        wait(500, MSEC)
-        drivetrain.drive_for(REVERSE, mov_distance-30, MM, 80, PERCENT, wait = True)
-        drivetrain_turn(75, RIGHT)
-        drivetrain.drive_for(FORWARD, 900, MM, 70, PERCENT, wait = False)
-        claw_c.set(True)
-        
+        drivetrain.drive_for(REVERSE, 560, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(30, RIGHT)
+        drivetrain.drive_for(REVERSE, 945, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(60, RIGHT)
+        drivetrain.drive_for(FORWARD, 1055, MM, 100, PERCENT, wait = False)
+        wait(1000, MSEC)
+        claw_c.set(False)
+        drivetrain.drive_for(REVERSE, 1055, MM, 70, PERCENT, wait = False)
+        drivetrain_turn(135, LEFT)
+        drivetrain.drive_for(FORWARD, 600, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(70, RIGHT)
+        drivetrain.drive_for(REVERSE, 200, MM, 50, PERCENT, wait = True)
     elif team_position == "red_offence" or team_position == "blue_offence":
-        pass
+        # - same as offence
+        drivetrain.drive_for(FORWARD, 265, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(45, LEFT)
+        claw_c.set(True)
+        drivetrain.drive_for(FORWARD, 510, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(75, LEFT)
+        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+        claw_c.set(False)
+        drivetrain_turn(115, RIGHT)
+        drivetrain.drive_for(FORWARD, 510, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
+        drivetrain.drive_for(FORWARD, 570, MM, 100, PERCENT, wait = False)
+        wait(500, MSEC)
+        claw_c.set(True)
+        drivetrain.drive_for(REVERSE, 570, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(120, RIGHT)
+        drivetrain.drive_for(FORWARD, 860, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 100, MM, 40, PERCENT, wait = True)
     elif team_position == "skill":
         pass
     else:
@@ -253,6 +282,9 @@ def driver_control():
     # Drive Train
         forward = controller_1.axis3.position()
         rotate = controller_1.axis4.position()*0.6
+        
+        if forward < -400:
+            forward = -400
 
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = (forward - rotate)
