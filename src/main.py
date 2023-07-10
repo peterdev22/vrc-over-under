@@ -73,6 +73,7 @@ puncher.set_stopping(HOLD)
 
 puncher.set_velocity(70,PERCENT)
 puncher.set_position(0,DEGREES)
+sensor_status = True
 
 
 team_position = " "
@@ -278,7 +279,6 @@ def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped
     # Process every 20 milliseconds
     while True:
-        controller_1.screen.clear_screen()
     # Drive Train
         forward = controller_1.axis3.position()
         rotate = controller_1.axis4.position()*0.6
@@ -312,12 +312,20 @@ def driver_control():
         if controller_1.buttonR1.pressing():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
-        elif optical.is_near_object():
+        elif controller_1.buttonR2.pressing():
+            sensor_status = not sensor_status
+            if sensor_status:
+                controller.rumble(".")
+            else:
+                controller.rumble("-")
+            while controller_1.buttonR2.pressing():
+                wait(50, MSEC)
+        elif optical.is_near_object() and sensor_status:
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         else:
             puncher.stop()
     # elevation control
-        if controller_1.buttonR2.pressing():
+        if controller_1.buttonL2.pressing():
             elevation(False)
         else:
             elevation(True)
@@ -330,15 +338,11 @@ def driver_control():
             shooter_d.set(False)
             wait(20, MSEC)
             claw_c.set(False)
-            
-    #expansion control
-    '''
-        if controller_1.buttonX.pressing():
-            expansion_status = not expansion_status
-            while controller_1.buttonX.pressing():
-                wait(10,MSEC)
-        expansion_c.set(expansion_status)
-    '''
+    #screen print
+    controller_1.screen.clear_screen()
+    controller_1.screen.print("sensor status: ", sensor_status)
+    controller_1.screen.print("puncher temperature: ", puncher.temperature())
+    controller_1.screen.print("drivebase temperature: ", drivetrain.temperature())
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
