@@ -174,7 +174,7 @@ def drivetrain_turn(target_angle, Direction):
     drivetrain.stop()
 
 # gps sensor def
-def goto(x_cord, y_cord):
+def goto(x_cord, y_cord, speed, wait):
     b = x_cord - gps.x_position(MM)
     c = y_cord - gps.y_position(MM)
     if abs(b) < 1 and abs(c) < 1:
@@ -185,7 +185,7 @@ def goto(x_cord, y_cord):
         if c < 0:
             angle = 180 - angle
             drivetrain.turn_to_heading(angle, DEGREES)
-            drivetrain.drive_for(FORWARD, a, MM)
+            drivetrain.drive_for(FORWARD, a, MM, speed, PERCENT, wait = wait)
 
 # vision sensor def
 def obj_looking(object): 
@@ -270,7 +270,44 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 860, MM, 100, PERCENT, wait = True)
         drivetrain.drive_for(FORWARD, 100, MM, 40, PERCENT, wait = True)
     elif team_position == "skill":
-        pass
+        drivetrain.drive_for(FORWARD, 265, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
+        claw_c.set(True)
+        drivetrain.drive_for(FORWARD, 510, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(110, RIGHT)
+        drivetrain.drive_for(REVERSE, 190, MM, 70, PERCENT, wait = True)
+        claw_c.set(False)
+        for i in range(45):
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+        drivetrain.drive_for(FORWARD, 645, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(180, RIGHT)
+        drivetrain.drive_for(REVERSE, 750, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(20, RIGHT)
+        drivetrain.drive_for(REVERSE, 300, MM, 70, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 300, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(90, RIGHT)
+        drivetrain.drive_for(FORWARD, 590, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(90, RIGHT)
+        drivetrain.drive_for(REVERSE, 300, MM, 70, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 300, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(180, LEFT)
+        #todo goto(190, 70, 100, True)
+        drivetrain.drive_for(FORWARD, 560, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 570, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(90, LEFT)
+        drivetrain.drive_for(FORWARD, 415, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(90, RIGHT)
+        drivetrain.drive_for(FORWARD, 590, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 295, MM, 100, PERCENT, wait = True)
+        drivetrain_turn(90, LEFT)
+        drivetrain.drive_for(FORWARD, 1200, MM, 100, PERCENT, wait = True)
+        drivetrain.turn(90, LEFT)
+        elevation.set(False)
+        #todo goto(-10, 250, 40, True)
+        elevation.set(True)
+        drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT, wait = True) 
     else:
         controller_1.screen.print("team position not selected")
 
