@@ -375,10 +375,6 @@ def driver_control():
             shooter_d.set(False)
             wait(20, MSEC)
             claw_c.set(False)
-        if controller_1.buttonA.pressing():
-            drivetrain_turn(90, LEFT)
-            while controller_1.buttonA.pressing():
-                wait(50, MSEC)
     #screen print
     controller_1.screen.clear_screen()
     controller_1.screen.print("sensor status: ", sensor_status)
