@@ -183,6 +183,7 @@ def goto(x_cord, y_cord, speed, wait):
             drivetrain.turn_to_heading(angle, DEGREES)
             drivetrain.drive_for(FORWARD, a, MM, speed, PERCENT, wait = wait)
 
+'''
 # vision sensor def
 def obj_looking(object): 
     controller_1.screen.set_cursor(1,1)
@@ -209,6 +210,7 @@ def triball_chasing():
             break
     drivetrain.stop()
     claw_c.set(False)
+'''
       
 # elevation def
 # - status = True(extend) or False(retract)
@@ -222,6 +224,9 @@ def autonomous():
     controller_1.screen.print(team_position)
     # - start at the LEFT SIDE of the goal!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
+        #! backup plan 
+        # claw_c.set(True)
+        # drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
         # - parallel to the match load bar, right front wheel on the cross of four tile, pre_load in claw
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
         drivetrain_turn(45, RIGHT)
@@ -247,6 +252,9 @@ def autonomous():
         drivetrain.drive_for(REVERSE, 200, MM, 50, PERCENT, wait = True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
+        #! backup plan 
+        # claw_c.set(True)
+        # drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
         # - same as offence
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
         drivetrain_turn(45, LEFT)
@@ -364,7 +372,7 @@ def driver_control():
     # elevation control
         if controller_1.buttonX.pressing():
             elevation(False)
-        else:
+        elif controller_1.buttonA.pressing():
             elevation(True)
     #intake control
         if controller_1.buttonL1.pressing():            
