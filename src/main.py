@@ -372,6 +372,7 @@ def driver_control():
     # elevation control
         if controller_1.buttonX.pressing():
             elevation(False)
+            sensor_status = False
         elif controller_1.buttonA.pressing():
             elevation(True)
     #intake control
