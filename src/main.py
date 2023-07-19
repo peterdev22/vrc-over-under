@@ -55,8 +55,6 @@ vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 # Pneumatics
 elevation_a = DigitalOut(brain.three_wire_port.a)
 elevation_b = DigitalOut(brain.three_wire_port.b)
-claw_c = DigitalOut(brain.three_wire_port.c)
-shooter_d = DigitalOut(brain.three_wire_port.d)
 
 
 # Pre-set variables
@@ -66,6 +64,9 @@ left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
 puncher.set_stopping(HOLD)
+puncher.set_velocity(5, PERCENT)
+puncher.set_timeout(1, SECOND)
+puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
 puncher.set_velocity(70,PERCENT)
 puncher.set_position(0,DEGREES)
 sensor_status = True
@@ -78,8 +79,6 @@ inertial.set_heading(0, DEGREES)
 
 elevation_a.set(True)
 elevation_b.set(True)
-
-shooter_d.set(False)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 
@@ -225,9 +224,9 @@ def autonomous():
     # - start at the LEFT SIDE of the goal!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
         #! backup plan 
-        # claw_c.set(True)
-        # drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
         # - parallel to the match load bar, right front wheel on the cross of four tile, pre_load in claw
+        '''
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
         drivetrain_turn(45, RIGHT)
         claw_c.set(True)
@@ -250,12 +249,13 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 600, MM, 90, PERCENT, wait = True)
         drivetrain_turn(70, RIGHT)
         drivetrain.drive_for(REVERSE, 200, MM, 50, PERCENT, wait = True)
+        '''
         
     elif team_position == "red_offence" or team_position == "blue_offence":
         #! backup plan 
-        # claw_c.set(True)
-        # drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
         # - same as offence
+        '''
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
         drivetrain_turn(45, LEFT)
         claw_c.set(True)
@@ -274,6 +274,7 @@ def autonomous():
         drivetrain_turn(120, RIGHT)
         drivetrain.drive_for(FORWARD, 860, MM, 90, PERCENT, wait = True)
         drivetrain.drive_for(FORWARD, 100, MM, 40, PERCENT, wait = True)
+        '''
         
     elif team_position == "skill":
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
@@ -370,25 +371,14 @@ def driver_control():
         else:
             puncher.stop()
     # elevation control
-        if controller_1.buttonX.pressing():
+        if controller_1.buttonUp.pressing():
             elevation(False)
             sensor_status = False
-        elif controller_1.buttonA.pressing():
+        elif controller_1.buttonDown.pressing():
             elevation(True)
-    #intake control
-        if controller_1.buttonL1.pressing():            
-            claw_c.set(True)
-            wait(20, MSEC)
-            shooter_d.set(True)
-        else:
-            shooter_d.set(False)
-            wait(20, MSEC)
-            claw_c.set(False)
-    #screen print
-    controller_1.screen.clear_screen()
-    controller_1.screen.print("sensor status: ", sensor_status)
-    controller_1.screen.print("puncher temperature: ", puncher.temperature())
-    controller_1.screen.print("drivebase temperature: ", drivetrain.temperature())
+    #180 turn
+        if controller_1.buttonA.pressing():            
+                drivetrain.turn_for(RIGHT, 180, DEGREES)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
