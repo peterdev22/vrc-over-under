@@ -77,6 +77,7 @@ inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
 
+elevation_status = True
 elevation_a.set(True)
 elevation_b.set(True)
 
@@ -355,7 +356,7 @@ def driver_control():
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
     # puncher control 
-        if controller_1.buttonR1.pressing():
+        if controller_1.buttonR1.pressing() and sensor_status:
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
         elif controller_1.buttonR2.pressing():
@@ -371,11 +372,12 @@ def driver_control():
         else:
             puncher.stop()
     # elevation control
-        if controller_1.buttonUp.pressing():
-            elevation(False)
+        if controller_1.buttonX.pressing():
+            elevation_status = not elevation_status
+            elevation(elevation_status)
             sensor_status = False
-        elif controller_1.buttonDown.pressing():
-            elevation(True)
+            while controller_1.buttonX.pressing():
+                wait(50, MSEC)
     #180 turn
         if controller_1.buttonA.pressing():            
                 drivetrain.turn_for(RIGHT, 180, DEGREES)
