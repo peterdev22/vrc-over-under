@@ -278,6 +278,9 @@ def autonomous():
         '''
         
     elif team_position == "skill":
+        #drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
+        #for i in range(45):
+        #    puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
         drivetrain_turn(45, RIGHT)
         claw_c.set(True)
@@ -378,9 +381,6 @@ def driver_control():
             sensor_status = False
             while controller_1.buttonX.pressing():
                 wait(50, MSEC)
-    #180 turn
-        if controller_1.buttonA.pressing():            
-                drivetrain.turn_for(RIGHT, 180, DEGREES)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
