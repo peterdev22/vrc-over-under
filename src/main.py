@@ -15,7 +15,6 @@ import urandom
 # - gps sensor: #8
 # - optial sensor: #7
 # - distance sensor:#18
-# - elevation cylinders: #a; #b
 
 
 # Brain
@@ -53,8 +52,7 @@ distance = Distance(Ports.PORT18)
 vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 
 # Pneumatics
-elevation_a = DigitalOut(brain.three_wire_port.a)
-elevation_b = DigitalOut(brain.three_wire_port.b)
+
 
 
 # Pre-set variables
@@ -62,14 +60,12 @@ left_drive_smart_stopped = False
 right_drive_smart_stopped = False
 left_drive_smart_speed = 0
 right_drive_smart_speed = 0
+drivetrain.set_stopping(HOLD)
 
 puncher.set_stopping(HOLD)
-puncher.set_velocity(5, PERCENT)
-puncher.set_timeout(1, SECOND)
-puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
 puncher.set_velocity(70,PERCENT)
 puncher.set_position(0,DEGREES)
-sensor_status = True
+
 
 team_position = " "
 
@@ -77,9 +73,6 @@ inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
 
-elevation_status = True
-elevation_a.set(True)
-elevation_b.set(True)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 
@@ -212,11 +205,6 @@ def triball_chasing():
     claw_c.set(False)
 '''
       
-# elevation def
-# - status = True(extend) or False(retract)
-def elevation(status):
-    elevation_a.set(status)
-    elevation_b.set(status)
              
 # Autonomous def
 def autonomous():
@@ -224,101 +212,18 @@ def autonomous():
     controller_1.screen.print(team_position)
     # - start at the LEFT SIDE of the goal!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
-        #! backup plan 
         drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
-        # - parallel to the match load bar, right front wheel on the cross of four tile, pre_load in claw
-        '''
-        drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-        claw_c.set(True)
-        drivetrain.drive_for(FORWARD, 510, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(90, RIGHT)
-        drivetrain.drive_for(FORWARD, 870, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, LEFT)
-        drivetrain.drive_for(FORWARD, 870, MM, 60, PERCENT, wait = True)
-        claw_c.set(False)
-        drivetrain.drive_for(REVERSE, 560, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(30, RIGHT)
-        drivetrain.drive_for(REVERSE, 945, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(60, RIGHT)
-        drivetrain.drive_for(FORWARD, 1055, MM, 90, PERCENT, wait = False)
-        wait(1000, MSEC)
-        claw_c.set(False)
-        drivetrain.drive_for(REVERSE, 1055, MM, 70, PERCENT, wait = False)
-        drivetrain_turn(135, LEFT)
-        drivetrain.drive_for(FORWARD, 600, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(70, RIGHT)
-        drivetrain.drive_for(REVERSE, 200, MM, 50, PERCENT, wait = True)
-        '''
+        sensor_status = True
         
     elif team_position == "red_offence" or team_position == "blue_offence":
-        #! backup plan 
         drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
-        # - same as offence
-        '''
-        drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(45, LEFT)
-        claw_c.set(True)
-        drivetrain.drive_for(FORWARD, 510, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(75, LEFT)
-        drivetrain.drive_for(FORWARD, 1300, MM, 90, PERCENT, wait = True)
-        claw_c.set(False)
-        drivetrain_turn(115, RIGHT)
-        drivetrain.drive_for(FORWARD, 510, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-        drivetrain.drive_for(FORWARD, 570, MM, 90, PERCENT, wait = False)
-        wait(500, MSEC)
-        claw_c.set(True)
-        drivetrain.drive_for(REVERSE, 570, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(120, RIGHT)
-        drivetrain.drive_for(FORWARD, 860, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 100, MM, 40, PERCENT, wait = True)
-        '''
+        sensor_status = False
         
     elif team_position == "skill":
-        #drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-        #for i in range(45):
-        #    puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        drivetrain.drive_for(FORWARD, 265, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-        claw_c.set(True)
-        drivetrain.drive_for(FORWARD, 510, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 405, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(110, RIGHT)
-        drivetrain.drive_for(REVERSE, 190, MM, 70, PERCENT, wait = True)
-        claw_c.set(False)
+        drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
         for i in range(45):
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        drivetrain.drive_for(FORWARD, 645, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(180, RIGHT)
-        drivetrain.drive_for(REVERSE, 750, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(20, RIGHT)
-        drivetrain.drive_for(REVERSE, 300, MM, 70, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 300, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, RIGHT)
-        drivetrain.drive_for(FORWARD, 590, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, RIGHT)
-        drivetrain.drive_for(REVERSE, 300, MM, 70, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 300, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(180, LEFT)
-        #todo goto(190, 70, 100, True)
-        drivetrain.drive_for(FORWARD, 560, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 570, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(90, LEFT)
-        drivetrain.drive_for(FORWARD, 415, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, RIGHT)
-        drivetrain.drive_for(FORWARD, 590, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 295, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, LEFT)
-        drivetrain.drive_for(FORWARD, 1200, MM, 90, PERCENT, wait = True)
-        drivetrain.turn(90, LEFT)
-        elevation.set(False)
-        #todo goto(-10, 250, 40, True)
-        elevation.set(True)
-        drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT, wait = True) 
+        sensor_status = True
     else:
         controller_1.screen.print("team position not selected")
 
@@ -374,13 +279,6 @@ def driver_control():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         else:
             puncher.stop()
-    # elevation control
-        if controller_1.buttonX.pressing():
-            elevation_status = not elevation_status
-            elevation(elevation_status)
-            sensor_status = False
-            while controller_1.buttonX.pressing():
-                wait(50, MSEC)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
