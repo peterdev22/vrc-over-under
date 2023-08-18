@@ -30,8 +30,8 @@ left_motor_c = Motor(Ports.PORT12, GearSetting.RATIO_6_1, True)
 left_drive_smart = MotorGroup(left_motor_a, left_motor_b, left_motor_c)
 
 right_motor_a = Motor(Ports.PORT10, GearSetting.RATIO_6_1, False)
-right_motor_b = Motor(Ports.PORT19, GearSetting.RATIO_6_1, False)
-right_motor_c = Motor(Ports.PORT21, GearSetting.RATIO_6_1, False)
+right_motor_b = Motor(Ports.PORT21, GearSetting.RATIO_6_1, False)
+right_motor_c = Motor(Ports.PORT19, GearSetting.RATIO_6_1, False)
 right_drive_smart = MotorGroup(right_motor_a, right_motor_b, right_motor_c)
 
 puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
@@ -52,7 +52,7 @@ distance = Distance(Ports.PORT18)
 vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 
 # Pneumatics
-
+wings = DigitalOut(brain.three_wire_port.a)
 
 
 # Pre-set variables
@@ -72,6 +72,7 @@ team_position = " "
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
+num_count = 0
 
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
@@ -221,8 +222,10 @@ def autonomous():
         
     elif team_position == "skill":
         drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-        for i in range(45):
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+        while num_count < 44:
+            if optical.is_near_object() and sensor_status:
+                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            num_count += 1
         sensor_status = True
     else:
         controller_1.screen.print("team position not selected")
@@ -279,6 +282,12 @@ def driver_control():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         else:
             puncher.stop()
+    # wings control
+        if controller_1.buttonL1.pressing():
+            wings.set(True)
+        else:
+            wings.set(False)
+        
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
