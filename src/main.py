@@ -48,6 +48,7 @@ gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle o
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
+descorer = DigitalOut(brain.three_wire_port.b)
 
 # Pre-set variables
 left_drive_smart_stopped = False
@@ -67,6 +68,9 @@ puncher.set_position(0,DEGREES)
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
+
+wings.set(False)
+descorer.set(False)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 team_position = " "
@@ -251,6 +255,11 @@ def driver_control():
             wings.set(True)
         else:
             wings.set(False)
+    #descorer control
+        if controller_1.buttonL2.pressing():
+            descorer.set(True)
+        else:
+            descorer.set(False)
         
     # Wait before repeating the controller input process
     wait(20, MSEC)
