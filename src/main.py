@@ -41,19 +41,13 @@ puncher = MotorGroup(puncher_a, puncher_b)
 # Drivetrain
 drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
 
-#vision sensor sig
-vision__G_TRIBALL = Signature(1, -3911, -319, -2115,-4709, -947, -2828,0.9, 0)
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
-optical = Optical(Ports.PORT7)
-distance = Distance(Ports.PORT18)
-vision = Vision(Ports.PORT13, 50, vision__G_TRIBALL)
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
-
 
 # Pre-set variables
 left_drive_smart_stopped = False
@@ -62,21 +56,20 @@ left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 drivetrain.set_stopping(HOLD)
 
+puncher.set_velocity(10,PERCENT)
+puncher.set_timeout(1, SECONDS)
+puncher.spin_for(REVERSE, 90, DEGREES, wait = False)
 puncher.set_stopping(HOLD)
-puncher.set_velocity(70,PERCENT)
+puncher.set_velocity(80,PERCENT)
+puncher.spin_for(REVERSE, 60, DEGREES, wait = False)
 puncher.set_position(0,DEGREES)
-
-
-team_position = " "
 
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
-num_count = 0
-
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
-
+team_position = " "
 
 # team and side choosing
 def team_choosing():
@@ -176,42 +169,12 @@ def goto(x_cord, y_cord, speed, wait):
             angle = 180 - angle
             drivetrain.turn_to_heading(angle, DEGREES)
             drivetrain.drive_for(FORWARD, a, MM, speed, PERCENT, wait = wait)
-
-'''
-# vision sensor def
-def obj_looking(object): 
-    controller_1.screen.set_cursor(1,1)
-    if vision.take_snapshot(vision__G_TRIBALL) is not None:
-        x_cord = vision.largest_object().centerX
-        y_cord = vision.largest_object().centerY
-        controller_1.screen.print("x: ", x_cord, "y: ", y_cord)
-        while not 150 <= x_cord <= 165:
-            while x_cord <= 150:
-                drivetrain.turn(LEFT, 5, PERCENT)
-            while x_cord >= 165:
-                drivetrain.turn(RIGHT, 5, PERCENT)
-        drivetrain.stop()
-    else:
-        controller_1.screen.print("object not found")
-        
-# triball chasing def
-def triball_chasing():
-    #obj_looking(vision__G_TRIBALL)
-    claw_c.set(True)
-    while distance.object_distance(MM)>60:
-        drivetrain.drive(FORWARD, distance.object_distance(MM)/10, PERCENT)
-        if not distance.is_object_detected():
-            break
-    drivetrain.stop()
-    claw_c.set(False)
-'''
-      
-             
+          
 # Autonomous def
 def autonomous():
     #defencive
     controller_1.screen.print(team_position)
-    # - start at the LEFT SIDE of the goal!!!!!!
+    # - start at the RIGHT SIDE of the Alliance station!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
         sensor_status = True
@@ -221,18 +184,19 @@ def autonomous():
         sensor_status = False
         
     elif team_position == "skill":
+        sensor_status = 1
+        num_count = 0
         drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
         while num_count < 44:
             if optical.is_near_object() and sensor_status:
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             num_count += 1
-        sensor_status = True
     else:
         controller_1.screen.print("team position not selected")
 
 #  Driver Control def
-# - controller map: left joystick: moving, L1 trigger: claw(hold)
-# - R1 trigger: puncher, R2 trigger: change sensor status(switch), X: elevation(hold)
+# - controller map: left joystick: moving, L1 trigger: wings(hold)
+# - R1 trigger: puncher, R2 trigger: change puncher status(switch), 
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status
     # Process every 20 milliseconds
