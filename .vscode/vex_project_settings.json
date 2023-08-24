@@ -2,7 +2,7 @@
 	"project": {
 		"name": "vrc-over-under",
 		"slot": 1,
-		"description": "re-set puncher before start",
+		"description": "",
 		"platform": "V5",
 		"creationDate": "Thu, 13 Apr 2023 03:52:52 GMT",
 		"language": "python",

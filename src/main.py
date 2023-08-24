@@ -14,7 +14,7 @@ import urandom
 # - inertial sensor: #3
 # - gps sensor: #8
 # - optial sensor: #7
-# - distance sensor:#18
+# - wings: a; descorer: b
 
 
 # Brain
@@ -45,10 +45,10 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, M
 # Sensor
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
+optical = Optical(Ports.PORT7)
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
-descorer = DigitalOut(brain.three_wire_port.b)
 
 # Pre-set variables
 left_drive_smart_stopped = False
@@ -62,12 +62,13 @@ puncher.set_timeout(1, SECONDS)
 puncher.spin_for(REVERSE, 90, DEGREES, wait = False)
 puncher.set_stopping(HOLD)
 puncher.set_velocity(80,PERCENT)
-puncher.spin_for(REVERSE, 60, DEGREES, wait = False)
+puncher.spin_for(REVERSE, 100, DEGREES, wait = False)
 puncher.set_position(0,DEGREES)
 
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
+sensor_status = 0
 
 wings.set(False)
 descorer.set(False)
@@ -255,11 +256,6 @@ def driver_control():
             wings.set(True)
         else:
             wings.set(False)
-    #descorer control
-        if controller_1.buttonL2.pressing():
-            descorer.set(True)
-        else:
-            descorer.set(False)
         
     # Wait before repeating the controller input process
     wait(20, MSEC)
