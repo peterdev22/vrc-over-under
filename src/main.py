@@ -62,7 +62,7 @@ puncher.set_timeout(1, SECONDS)
 puncher.spin_for(REVERSE, 90, DEGREES, wait = False)
 puncher.set_stopping(HOLD)
 puncher.set_velocity(80,PERCENT)
-puncher.spin_for(REVERSE, 100, DEGREES, wait = False)
+puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
 puncher.set_position(0,DEGREES)
 
 inertial.calibrate()
@@ -178,24 +178,47 @@ def goto(x_cord, y_cord, speed, wait):
 # Autonomous def
 def autonomous():
     #defencive
-    controller_1.screen.print(team_position)
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
-        drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
         sensor_status = True
+        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(135, RIGHT)
+        drivetrain.drive_for(FORWARD, 450, MM, 60, PERCENT, wait = True)
+        drivetrain_turn(45, LEFT)
+        drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 1000, MM, 50, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
+        drivetrain.drive_for(REVERSE, 450, MM, 60, PERCENT, wait = True)
+        drivetrain_turn(75, LEFT)
+        drivetrain.drive_for(REVERSE, 150, MM, 20, PERCENT, wait = True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
-        drivetrain.drive_for(FORWARD, 1000, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
         sensor_status = False
+        drivetrain.drive_for(Reverse, 300, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(90, LEFT)
+        drivetrain.drive_for(FORWARD, 600, MM, 90, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
+        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
+        drivetrain_turn(135, RIGHT)
+        wings.set(True)
+        drivetrain.drive_for(FORWARD, 850, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 500, MM, 90, PERCENT, wait = True)
+        drivetrain_turn(90, LEFT)
         
     elif team_position == "skill":
-        sensor_status = 1
         num_count = 0
+        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(60, RIGHT)
         drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-        while num_count < 44:
-            if optical.is_near_object() and sensor_status:
-                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-            num_count += 1
+        for i in range(46):
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+        drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
+        drivetrain_turn(45, RIGHT)
+       
+        
     else:
         controller_1.screen.print("team position not selected")
 
@@ -262,6 +285,6 @@ def driver_control():
 
 #choose team
 team_position = team_choosing()
-
+inertial.calibrate()
 # Competition functions for the driver control & autonomous tasks
 competition = Competition(driver_control, autonomous)
