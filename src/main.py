@@ -259,7 +259,7 @@ def driver_control():
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
     # puncher control 
-        if controller_1.buttonR1.pressing() and sensor_status:
+        if controller_1.buttonR1.pressing():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
         elif controller_1.buttonR2.pressing():
