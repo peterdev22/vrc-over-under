@@ -44,7 +44,7 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, M
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #* x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
 # Pneumatics
@@ -55,23 +55,16 @@ left_drive_smart_stopped = False
 right_drive_smart_stopped = False
 left_drive_smart_speed = 0
 right_drive_smart_speed = 0
-drivetrain.set_stopping(HOLD)
 
-puncher.set_velocity(10,PERCENT)
-puncher.set_timeout(1, SECONDS)
-puncher.spin_for(REVERSE, 90, DEGREES, wait = False)
-puncher.set_stopping(HOLD)
-puncher.set_velocity(80,PERCENT)
-puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
 puncher.set_position(0,DEGREES)
 
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
 sensor_status = 0
+matchload = 0
 
 wings.set(False)
-descorer.set(False)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 team_position = " "
@@ -217,7 +210,7 @@ def autonomous():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
         drivetrain_turn(45, RIGHT)
-       
+       #todo haven't finished
         
     else:
         controller_1.screen.print("team position not selected")
@@ -272,6 +265,16 @@ def driver_control():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+        elif controller.buttonX.pressing():
+            if not matchload:
+                puncher.spin_for(REVERSE, 60, DEGREES, wait = True)
+                puncher.set_stopping(HOLD)
+                sensor_status = True
+            elif matchload:
+                puncher.set_stopping(COAST)
+            matchload = not matchload
+            while controller_1.buttonX.pressing():
+                wait(50, MSEC)
         else:
             puncher.stop()
     # wings control
