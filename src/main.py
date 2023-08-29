@@ -57,7 +57,6 @@ left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
 puncher.set_position(0,DEGREES)
-
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
@@ -199,6 +198,7 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 850, MM, 90, PERCENT, wait = True)
         drivetrain.drive_for(REVERSE, 500, MM, 90, PERCENT, wait = True)
         drivetrain_turn(90, LEFT)
+        drivetrain.set_stopping(HOLD)
         
     elif team_position == "skill":
         num_count = 0
@@ -220,6 +220,7 @@ def autonomous():
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch), 
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status
+    drivetrain.set_stopping(BRAKE)
     # Process every 20 milliseconds
     while True:
     # Drive Train
