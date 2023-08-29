@@ -51,8 +51,8 @@ optical = Optical(Ports.PORT7)
 wings = DigitalOut(brain.three_wire_port.a)
 
 # Pre-set variables
-left_drive_smart_stopped = False
-right_drive_smart_stopped = False
+left_drive_smart_stopped = 0
+right_drive_smart_stopped = 0
 left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
@@ -62,6 +62,7 @@ gps.calibrate()
 inertial.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
+wings_status = 0
 
 wings.set(False)
 
@@ -142,7 +143,7 @@ def drivetrain_turn(target_angle, Direction):
     current_angle = inertial.heading(DEGREES)
     if Direction == LEFT:
             target_angle = 360 - target_angle
-    while not target_angle + 0.5 > current_angle > target_angle - 0.5:
+    while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
         if Direction == LEFT:
             turn_angle = current_angle - target_angle
         else:
@@ -219,7 +220,7 @@ def autonomous():
 # - controller map: left joystick: moving, L1 trigger: wings(hold)
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch), 
 def driver_control():
-    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status
+    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
     drivetrain.set_stopping(BRAKE)
     # Process every 20 milliseconds
     while True:
@@ -236,15 +237,15 @@ def driver_control():
         if left_drive_smart_speed < 5 and left_drive_smart_speed > -5:
             if left_drive_smart_stopped:
                 left_drive_smart.stop()
-                left_drive_smart_stopped = False
+                left_drive_smart_stopped = 0
         else:
-            left_drive_smart_stopped = True
+            left_drive_smart_stopped = 1
         if right_drive_smart_speed < 5 and right_drive_smart_speed > -5:
             if right_drive_smart_stopped:
                 right_drive_smart.stop()
-                right_drive_smart_stopped = False
+                right_drive_smart_stopped = 0
         else:
-            right_drive_smart_stopped = True
+            right_drive_smart_stopped = 1
 
         if left_drive_smart_stopped:
             left_drive_smart.set_velocity(left_drive_smart_speed, PERCENT)
@@ -266,9 +267,9 @@ def driver_control():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        elif controller.buttonX.pressing():
+        elif controller_1.buttonX.pressing():
             if not matchload:
-                puncher.spin_for(REVERSE, 60, DEGREES, wait = True)
+                puncher.spin_for(REVERSE, 80, DEGREES, wait = True)
                 puncher.set_stopping(HOLD)
                 sensor_status = True
             elif matchload:
@@ -280,9 +281,13 @@ def driver_control():
             puncher.stop()
     # wings control
         if controller_1.buttonL1.pressing():
-            wings.set(True)
+            wings.set(not wings_status)
+        elif controller_1.buttonL2.pressing():
+            wings_status = not wings_status
+            while controller_1.buttonL2.pressing():
+                wait(50, MSEC)
         else:
-            wings.set(False)
+            wings.set(wings_status)
         
     # Wait before repeating the controller input process
     wait(20, MSEC)
