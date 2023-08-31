@@ -255,7 +255,9 @@ def driver_control():
             right_drive_smart.spin(FORWARD)
     # puncher control 
         if controller_1.buttonR1.pressing():
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
+            while controller_1.buttonR1.pressing():
+                wait(50, MSEC)
             puncher.spin_to_position(0,DEGREES, wait = False)
         elif controller_1.buttonR2.pressing():
             sensor_status = not sensor_status
@@ -266,10 +268,10 @@ def driver_control():
             while controller_1.buttonR2.pressing():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
         elif controller_1.buttonX.pressing():
             if not matchload:
-                puncher.spin_for(REVERSE, 80, DEGREES, wait = True)
+                puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
                 puncher.set_stopping(HOLD)
                 sensor_status = True
             elif matchload:
