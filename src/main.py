@@ -233,13 +233,13 @@ def driver_control():
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = (forward - rotate)
 
-        if left_drive_smart_speed < 5 and left_drive_smart_speed > -5:
+        if left_drive_smart_speed < 2 and left_drive_smart_speed > -2:
             if left_drive_smart_stopped:
                 left_drive_smart.stop()
                 left_drive_smart_stopped = 0
         else:
             left_drive_smart_stopped = 1
-        if right_drive_smart_speed < 5 and right_drive_smart_speed > -5:
+        if right_drive_smart_speed < 2 and right_drive_smart_speed > -2:
             if right_drive_smart_stopped:
                 right_drive_smart.stop()
                 right_drive_smart_stopped = 0
@@ -293,6 +293,15 @@ def driver_control():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
+    # elevation auto 
+        if controller_1.buttonA.pressing():
+            drivetrain.drive_for(Reverse, 400, MM, 80, PERCENT, wait = True)
+            drivetrain.set_velocity(100, PERCENT)
+            drivetrain.drive(FORWARD)
+            while abs(controller_1.axis3.position())<5 and abs(controller_1.axis4.position())<5:
+                if inertial.orientation(OrientationType.PITCH, DEGREES) < 15.00:
+                    drivetrain.stop()
+            drivetrain.stop()
         
     # Wait before repeating the controller input process
     wait(20, MSEC)
