@@ -285,15 +285,6 @@ def driver_control():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
-    # elevation auto 
-        if controller_1.buttonA.pressing():
-            drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
-            drivetrain.set_velocity(100, PERCENT)
-            drivetrain.drive(REVERSE)
-            while abs(controller_1.axis3.position())<5 and abs(controller_1.axis4.position())<5:
-                if inertial.orientation(OrientationType.PITCH, DEGREES) < 15.00:
-                    drivetrain.stop()
-            drivetrain.stop()
         
     # Wait before repeating the controller input process
     wait(20, MSEC)
