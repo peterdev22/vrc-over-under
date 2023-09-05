@@ -63,7 +63,6 @@ inertial.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
 wings_status = 0
-pushing = 0
 
 wings.set(False)
 
@@ -221,17 +220,16 @@ def autonomous():
 # - controller map: left joystick: moving, L1 trigger: wings(hold)
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch), 
 def driver_control():
-    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload, pushing
+    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
     drivetrain.set_stopping(BRAKE)
     # Process every 20 milliseconds
     while True:
     # Drive Train
         forward = controller_1.axis3.position()
-        #rotate = controller_1.axis4.position()*0.6
-        rotate = format((controller_1.axis4.position()**3)/10000, '.2f')
+        rotate = (controller_1.axis4.position()**3)/11000
         
         left_drive_smart_speed = forward + rotate
-        right_drive_smart_speed = (forward - rotate)
+        right_drive_smart_speed = forward - rotate
 
         if left_drive_smart_speed < 2 and left_drive_smart_speed > -2:
             if left_drive_smart_stopped:
@@ -254,9 +252,7 @@ def driver_control():
             right_drive_smart.spin(FORWARD)
     # puncher control 
         if controller_1.buttonR1.pressing():
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
-            while controller_1.buttonR1.pressing():
-                wait(50, MSEC)
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
         elif controller_1.buttonR2.pressing():
             sensor_status = not sensor_status
@@ -267,12 +263,10 @@ def driver_control():
             while controller_1.buttonR2.pressing():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
-            if not pushing:
-                puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
-                pushing = 1
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         elif controller_1.buttonX.pressing():
             if not matchload:
-                puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+                puncher.spin_for(REVERSE, 80, DEGREES, wait = True)
                 puncher.set_stopping(HOLD)
                 sensor_status = True
             elif matchload:
@@ -282,8 +276,6 @@ def driver_control():
                 wait(50, MSEC)
         else:
             puncher.stop()
-        if not optical.is_near_object() and pushing:
-            pushing = 0
     # wings control
         if controller_1.buttonL1.pressing():
             wings.set(not wings_status)
@@ -295,9 +287,9 @@ def driver_control():
             wings.set(wings_status)
     # elevation auto 
         if controller_1.buttonA.pressing():
-            drivetrain.drive_for(Reverse, 400, MM, 80, PERCENT, wait = True)
+            drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
             drivetrain.set_velocity(100, PERCENT)
-            drivetrain.drive(FORWARD)
+            drivetrain.drive(REVERSE)
             while abs(controller_1.axis3.position())<5 and abs(controller_1.axis4.position())<5:
                 if inertial.orientation(OrientationType.PITCH, DEGREES) < 15.00:
                     drivetrain.stop()
