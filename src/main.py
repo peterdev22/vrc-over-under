@@ -14,7 +14,7 @@ import urandom
 # - inertial sensor: #3
 # - gps sensor: #8
 # - optial sensor: #7
-# - wings: a; descorer: b
+# - wings: a
 
 
 # Brain
@@ -173,45 +173,34 @@ def autonomous():
     #defencive
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
     if team_position == "red_defence" or team_position == "blue_defence":
-        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
-        sensor_status = True
-        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(135, RIGHT)
-        drivetrain.drive_for(FORWARD, 450, MM, 60, PERCENT, wait = True)
-        drivetrain_turn(45, LEFT)
-        drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 1000, MM, 50, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-        drivetrain.drive_for(REVERSE, 450, MM, 60, PERCENT, wait = True)
-        drivetrain_turn(75, LEFT)
-        drivetrain.drive_for(REVERSE, 150, MM, 20, PERCENT, wait = True)
-        
-    elif team_position == "red_offence" or team_position == "blue_offence":
-        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
-        sensor_status = False
-        drivetrain.drive_for(Reverse, 300, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(90, LEFT)
-        drivetrain.drive_for(FORWARD, 600, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(135, RIGHT)
-        wings.set(True)
-        drivetrain.drive_for(FORWARD, 850, MM, 90, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 500, MM, 90, PERCENT, wait = True)
-        drivetrain_turn(90, LEFT)
-        drivetrain.set_stopping(HOLD)
-        
-    elif team_position == "skill":
-        num_count = 0
-        drivetrain.drive_for(FORWARD, 900, MM, 90, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
         drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
         drivetrain_turn(60, RIGHT)
         drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-        for i in range(46):
+        
+    elif team_position == "red_offence" or team_position == "blue_offence":
+        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+        
+    elif team_position == "skill":
+        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
+        drivetrain_turn(60, RIGHT)
+        drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
+        for i in range(38):
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
-        drivetrain_turn(45, RIGHT)
-       #todo haven't finished
+        driver_train.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
+        goto(1450, 900, 80, True)
+        goto(1450, -900, 80, True)
+        goto(1000, -900, 80, True)
+        goto(0, -300, 80, True)
+        drivetrain.turn_to_heading(0, DEGREES)
+        wings.set(True)
+        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        drivetrain.turn_for(LEFT, 20, DEGREES)
+        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        for i in range(3):
+            drivetrain.drive_for(FORWARD, 1000, 100, PERCENT)
+            drivetrain.drive_for(REVERSE, 700, 60, PERCENT)
         
     else:
         controller_1.screen.print("team position not selected")
@@ -226,7 +215,7 @@ def driver_control():
     while True:
     # Drive Train
         forward = controller_1.axis3.position()
-        rotate = (controller_1.axis4.position()**3)/11000
+        rotate = controller_1.axis4.position()*0.4
         
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
@@ -285,7 +274,26 @@ def driver_control():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
-        
+    
+    # skill auto
+        if team_position == "skill" and controller_1.buttonUp.pressing():
+            drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+            drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
+            drivetrain_turn(60, RIGHT)
+            drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
+            for i in range(38):
+                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            goto(1450, 900, 80, True)
+            goto(1450, -900, 80, True)
+            goto(1000, -900, 80, True)
+            goto(0, -300, 80, True)
+            drivetrain.turn_to_heading(0, DEGREES)
+            wings.set(True)
+            drivetrain.turn_for(RIGHT, 10, DEGREES)
+            drivetrain.turn_for(LEFT, 10, DEGREES)
+            for i in range(3):
+                drivetrain.drive_for(FORWARD, 1000, 100, PERCENT)
+                drivetrain.drive_for(REVERSE, 700, 60, PERCENT)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 

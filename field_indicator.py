@@ -12,7 +12,7 @@ origin = (field_size[0] // 2, field_size[1] // 2)
 # Block settings
 block_size = (45, 45)
 block_color = pygame.Color('blue')
-block_speed = 0.2
+block_speed = 1
 block_rotation_speed = 5
 
 # Create the window
@@ -32,14 +32,8 @@ arrow_rotation = 0
 pressed_keys = set()
 
 def draw_field():
-    screen.fill(pygame.Color('black'))
-    for x in range(0, field_size[0], tile_size * 2):
-        for y in range(0, field_size[1], tile_size * 2):
-            pygame.draw.rect(screen, pygame.Color('darkgray'), (x, y, tile_size, tile_size))
-            pygame.draw.rect(screen, pygame.Color('lightgray'), (x + tile_size, y, tile_size, tile_size))
-            pygame.draw.rect(screen, pygame.Color('lightgray'), (x, y + tile_size, tile_size, tile_size))
-            pygame.draw.rect(screen, pygame.Color('darkgray'), (x + tile_size, y + tile_size, tile_size, tile_size))
-
+    imp = pygame.image.load("C:\\Users\\EricGu\\Desktop\\VEX\\over under\\field diagram.png").convert()
+    screen.blit(imp, (0, 0))
 def draw_block():
     rotated_block = pygame.transform.rotate(pygame.Surface(block_size), -arrow_rotation)
     block_rect = rotated_block.get_rect(center=block_pos)
