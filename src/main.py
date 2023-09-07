@@ -44,7 +44,7 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, M
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT8, -5.00, -2.80, INCHES, 270) #- x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -110, -150, MM, 270) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
 # Pneumatics
@@ -182,9 +182,17 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
         
     elif team_position == "skill":
+        '''
+        puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+        puncher.set_stopping(HOLD)
+        drivetrain.drive_for(Reverse, 300, MM, 70, PERCENT, wait = True)
+        drivetrain.turn_for(LEFT, 75, DEGREES)
+        drivetrain.drive_for(Reverse, 100, MM, 70, PERCENT, wait = True)
+        puncher.spin(REVERSE)
+        '''
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
         drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(60, RIGHT)
+        drivetrain.turn_for(RIGHT, 60, DEGREES)
         drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
         for i in range(38):
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
@@ -211,6 +219,14 @@ def autonomous():
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
     drivetrain.set_stopping(BRAKE)
+    if team_position == "red_defence" or team_position == "blue_defence":
+        sensor_status = 1
+    elif team_position == "red_offence" or team_position == "blue_offence":
+        sensor_status = 0
+    elif team_position == "skill":
+        sensor_status = 1
+        puncher.spin_for(REVERSE, 80, DEGREES, wait = True)
+        puncher.set_stopping(HOLD)
     # Process every 20 milliseconds
     while True:
     # Drive Train
