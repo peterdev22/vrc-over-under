@@ -3,7 +3,7 @@
 # Frij 75477M
 This repository contains team 75477M's code for the [2023-2024 Over Under](https://www.youtube.com/watch?v=dvDqEI7qO34) season of the VEX robotics competiton.
 
-Having the code in a git remote allows us to collaborate as a team easily as everyone has access to the codebase and any changes can immidiately be reflected across all our devices. 
+Having the code in a git remote allows us to collaborate as a team easily as everyone has access to the codebase and any changes can immediately be reflected across all our devices. 
 
 #### Programming
 Frij's code uses purely Python. You can find the wiring guide at the top of main.py for the brain's port configuration.
@@ -16,6 +16,6 @@ Frij's code uses purely Python. You can find the wiring guide at the top of main
 
 <br>
 
-Thanks from the Frij team,
+Thank you, from the Frij team,
 
 *Peter, Aidan, Eric & Karmen*
