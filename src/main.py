@@ -44,7 +44,7 @@ drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, M
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT8, -110, -150, MM, 270) #- x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -110, -150, MM, 180) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
 # Pneumatics
@@ -165,7 +165,7 @@ def goto(x_cord, y_cord, speed, wait):
         angle = math.asin((math.sin(90 / 180.0 * math.pi) * b) / a) / math.pi * 180
         if c < 0:
             angle = 180 - angle
-            drivetrain.turn_to_heading(angle, DEGREES)
+            drivetrain.turn_for(RIGHT, angle, DEGREES)
             drivetrain.drive_for(FORWARD, a, MM, speed, PERCENT, wait = wait)
           
 # Autonomous def
@@ -190,25 +190,35 @@ def autonomous():
         drivetrain.drive_for(Reverse, 100, MM, 70, PERCENT, wait = True)
         puncher.spin(REVERSE)
         '''
+        drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
-        drivetrain.turn_for(RIGHT, 60, DEGREES)
-        drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-        for i in range(38):
+        puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+        puncher.set_stopping(HOLD)
+        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
+        for i in range(1):
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        driver_train.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
-        goto(1450, 900, 80, True)
-        goto(1450, -900, 80, True)
-        goto(1000, -900, 80, True)
-        goto(0, -300, 80, True)
-        drivetrain.turn_to_heading(0, DEGREES)
-        wings.set(True)
-        drivetrain.turn_for(RIGHT, 10, DEGREES)
-        drivetrain.turn_for(LEFT, 20, DEGREES)
-        drivetrain.turn_for(RIGHT, 10, DEGREES)
+        drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
+        '''goto(1600, -900, 80, True)
+        goto(1600, 800, 80, True)
+        goto(1000, 1000, 80, True)
+        goto(100, 100, 80, True)'''
+        drivetrain.set_drive_velocity(70, PERCENT)
+        drivetrain.turn_for(RIGHT, 70, DEGREES)
+        drivetrain.drive_for(FORWARD, 950, MM)
+        drivetrain.turn_for(LEFT, 35, DEGREES)
+        drivetrain.drive_for(FORWARD, 5000, MM)
+        drivetrain.drive_for(FORWARD, 850, MM, 40, PERCENT)
+        drivetrain.turn_for(RIGHT, 20, DEGREES)
+        wait(1,SECONDS)
+        drivetrain.drive_for(REVERSE, 5000, MM, 20, PERCENT)
+        drivetrain.turn_for(LEFT, 150, DEGREES)
+        wings.set(False)
         for i in range(3):
-            drivetrain.drive_for(FORWARD, 1000, 100, PERCENT)
-            drivetrain.drive_for(REVERSE, 700, 60, PERCENT)
+            drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT)
+            drivetrain.drive_for(REVERSE, 700,MM, 30, PERCENT)
+            drivetrain.turn_for(LEFT, 10, DEGREES)
         
     else:
         controller_1.screen.print("team position not selected")
