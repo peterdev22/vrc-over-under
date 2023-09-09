@@ -182,6 +182,7 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
         
     elif team_position == "skill":
+        time = 0
         '''
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
         puncher.set_stopping(HOLD)
@@ -197,28 +198,30 @@ def autonomous():
         drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
         drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
-        for i in range(1):
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT, wait = True)
-        '''goto(1600, -900, 80, True)
-        goto(1600, 800, 80, True)
-        goto(1000, 1000, 80, True)
-        goto(100, 100, 80, True)'''
+        '''
+        for i in range(34):
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)'''
+        time = brain.timer.time(SECONDS)
+        while brain.timer.time(SECONDS) < time +30:
+            if optical.is_near_object():
+                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+        puncher.set_stopping(COAST)
+        drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
         drivetrain.set_drive_velocity(70, PERCENT)
         drivetrain.turn_for(RIGHT, 70, DEGREES)
         drivetrain.drive_for(FORWARD, 950, MM)
         drivetrain.turn_for(LEFT, 35, DEGREES)
         drivetrain.drive_for(FORWARD, 5000, MM)
-        drivetrain.drive_for(FORWARD, 850, MM, 40, PERCENT)
+        drivetrain.drive_for(FORWARD, 900, MM, 40, PERCENT)
         drivetrain.turn_for(RIGHT, 20, DEGREES)
-        wait(1,SECONDS)
         drivetrain.drive_for(REVERSE, 5000, MM, 20, PERCENT)
-        drivetrain.turn_for(LEFT, 150, DEGREES)
-        wings.set(False)
+        drivetrain.drive_for(REVERSE, 5000, MM, 20, PERCENT)
+        drivetrain.turn_for(LEFT, 165, DEGREES)
+        wings.set(True)
         for i in range(3):
             drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT)
             drivetrain.drive_for(REVERSE, 700,MM, 30, PERCENT)
-            drivetrain.turn_for(LEFT, 10, DEGREES)
+            drivetrain.turn_for(LEFT, 15, DEGREES)
         
     else:
         controller_1.screen.print("team position not selected")
