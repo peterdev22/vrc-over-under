@@ -206,6 +206,7 @@ def autonomous():
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         puncher.set_stopping(COAST)
+        puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
         drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
         drivetrain.set_drive_velocity(70, PERCENT)
         drivetrain.turn_for(RIGHT, 70, DEGREES)
