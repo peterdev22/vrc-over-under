@@ -172,14 +172,18 @@ def goto(x_cord, y_cord, speed, wait):
 def autonomous():
     #defencive
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
+    # - left back wheel on the second connection of the foam tile, "r" on the front ramp lined up with the connection line, 
+    # - preload triball line up with the right edge of the robot(skill: red defence position, alliance triball on the middle left of the left side of the goal)
     if team_position == "red_defence" or team_position == "blue_defence":
+        drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-        drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
-        drivetrain_turn(60, RIGHT)
-        drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
+        drivetrain.turn_for(RIGHT, 180, DEGREES)
+        drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
         
     elif team_position == "skill":
         time = 0
@@ -235,6 +239,8 @@ def driver_control():
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
+        puncher.spin_for(REVERSE, 80, DEGREES, wait = True)
+        puncher.set_stopping(HOLD)
     elif team_position == "red_offence" or team_position == "blue_offence":
         sensor_status = 0
     elif team_position == "skill":
