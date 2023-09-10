@@ -251,7 +251,7 @@ def driver_control():
     while True:
     # Drive Train
         forward = controller_1.axis3.position()
-        rotate = controller_1.axis4.position()*0.4
+        rotate = (170/(1+2.72**(-0.018*controller_1.axis4.position())))-85
         
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
