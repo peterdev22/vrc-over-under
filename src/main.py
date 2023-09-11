@@ -313,23 +313,47 @@ def driver_control():
     
     # skill auto
         if team_position == "skill" and controller_1.buttonUp.pressing():
+            time = 0
+            '''
+            puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+            puncher.set_stopping(HOLD)
+            drivetrain.drive_for(Reverse, 300, MM, 70, PERCENT, wait = True)
+            drivetrain.turn_for(LEFT, 75, DEGREES)
+            drivetrain.drive_for(Reverse, 100, MM, 70, PERCENT, wait = True)
+            puncher.spin(REVERSE)
+            '''
+            drivetrain.set_timeout(1, SECONDS)
             drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-            drivetrain.drive_for(Reverse, 530, MM, 70, PERCENT, wait = True)
-            drivetrain_turn(60, RIGHT)
-            drivetrain.drive_for(REVERSE, 200, MM, 20, PERCENT, wait = True)
-            for i in range(38):
-                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-            goto(1450, 900, 80, True)
-            goto(1450, -900, 80, True)
-            goto(1000, -900, 80, True)
-            goto(0, -300, 80, True)
-            drivetrain.turn_to_heading(0, DEGREES)
+            puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+            puncher.set_stopping(HOLD)
+            drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
+            drivetrain.turn_for(RIGHT, 180, DEGREES)
+            drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
+            '''
+            for i in range(34):
+                puncher.spin_for(REVERSE, 180, DEGREES, wait = True)'''
+            time = brain.timer.time(SECONDS)
+            while brain.timer.time(SECONDS) < time +30:
+                if optical.is_near_object():
+                    puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
+            puncher.set_stopping(COAST)
+            puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
+            drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
+            drivetrain.set_drive_velocity(70, PERCENT)
+            drivetrain.turn_for(RIGHT, 70, DEGREES)
+            drivetrain.drive_for(FORWARD, 950, MM)
+            drivetrain.turn_for(LEFT, 35, DEGREES)
+            drivetrain.drive_for(FORWARD, 5000, MM)
+            drivetrain.drive_for(FORWARD, 900, MM, 40, PERCENT)
+            drivetrain.turn_for(RIGHT, 20, DEGREES)
+            drivetrain.drive_for(REVERSE, 5000, MM, 20, PERCENT)
+            drivetrain.drive_for(REVERSE, 5000, MM, 20, PERCENT)
+            drivetrain.turn_for(LEFT, 165, DEGREES)
             wings.set(True)
-            drivetrain.turn_for(RIGHT, 10, DEGREES)
-            drivetrain.turn_for(LEFT, 10, DEGREES)
             for i in range(3):
-                drivetrain.drive_for(FORWARD, 1000, 100, PERCENT)
-                drivetrain.drive_for(REVERSE, 700, 60, PERCENT)
+                drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT)
+                drivetrain.drive_for(REVERSE, 700,MM, 30, PERCENT)
+                drivetrain.turn_for(LEFT, 15, DEGREES)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
