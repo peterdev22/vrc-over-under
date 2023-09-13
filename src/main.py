@@ -208,23 +208,24 @@ def autonomous():
         for i in range(34):
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)'''
         time = brain.timer.time(SECONDS)
-        while brain.timer.time(SECONDS) < time +30:
+        while brain.timer.time(SECONDS) < time +35:
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-        puncher.set_stopping(COAST)
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
+        puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
         drivetrain.set_drive_velocity(70, PERCENT)
         drivetrain.turn_for(RIGHT, 70, DEGREES)
         drivetrain.drive_for(FORWARD, 950, MM)
-        drivetrain.turn_for(RIGHT, 25, DEGREES)
-        drivetrain.drive_for(REVERSE, 5000, MM, 60, PERCENT)
-        drivetrain.turn_for(LEFT, 10, DEGREES)
-        drivetrain.drive_for(REVERSE, 5000, MM, 50, PERCENT)
-        drivetrain.drive_for(REVERSE, 5000, MM, 50, PERCENT)
+        drivetrain.turn_for(LEFT, 30, DEGREES)
+        drivetrain.drive_for(FORWARD, 5000, MM)
+        drivetrain.drive_for(FORWARD, 900, MM, 40, PERCENT)
+        drivetrain.turn_for(RIGHT, 20, DEGREES)
+        drivetrain.drive_for(REVERSE, 5000, MM, 30, PERCENT)
+        drivetrain.drive_for(REVERSE, 5000, MM, 30, PERCENT)
         drivetrain.turn_for(LEFT, 165, DEGREES)
         wings.set(True)
-        for i in range(4):
+        for i in range(3):
             drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT)
             drivetrain.drive_for(REVERSE, 700, MM, 30, PERCENT)
             drivetrain.turn_for(LEFT, 15, DEGREES)
