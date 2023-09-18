@@ -9,8 +9,8 @@ Having the code in a git remote allows us to collaborate as a team easily as eve
 Frij's code uses purely Python. You can find the wiring guide at the top of main.py for the brain's port configuration.
 
 #### Mechanical Subsystems
-- 6-motor drivetrain at 366 RPM
-- 2-motor puncher
+- 6-motor drivetrain at 360 RPM
+- 2-motor puncher at 100 RPM
 - Pneumatics powered front wings
 - Passive triball blocker
 

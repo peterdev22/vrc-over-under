@@ -57,6 +57,7 @@ left_drive_smart_speed = 0
 right_drive_smart_speed = 0
 
 puncher.set_position(0,DEGREES)
+puncher.set_velocity(100, PERCENT)
 inertial.calibrate()
 gps.calibrate()
 inertial.set_heading(0, DEGREES)
@@ -278,16 +279,16 @@ def driver_control():
             right_drive_smart.set_velocity(right_drive_smart_speed, PERCENT)
             right_drive_smart.spin(FORWARD)
     # puncher control 
-        if controller_1.buttonR1.pressing():
+        if controller_1.buttonL1.pressing():
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
             puncher.spin_to_position(0,DEGREES, wait = False)
-        elif controller_1.buttonR2.pressing():
+        elif controller_1.buttonL2.pressing():
             sensor_status = not sensor_status
             if sensor_status:
                 controller_1.rumble(".")
             else:
                 controller_1.rumble("-")
-            while controller_1.buttonR2.pressing():
+            while controller_1.buttonL2.pressing():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
@@ -304,34 +305,15 @@ def driver_control():
         else:
             puncher.stop()
     # wings control
-        if controller_1.buttonL1.pressing():
+        if controller_1.buttonR1.pressing():
             wings.set(not wings_status)
-        elif controller_1.buttonL2.pressing():
+        elif controller_1.buttonR2.pressing():
             wings_status = not wings_status
-            while controller_1.buttonL2.pressing():
+            while controller_1.buttonR2.pressing():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
     
-    # skill auto
-        if team_position == "skill" and controller_1.buttonUp.pressing():
-            time = 0
-            drivetrain.set_timeout(1, SECONDS)
-            drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-            drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
-            drivetrain.turn_for(RIGHT, 180, DEGREES)
-            drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
-            time = brain.timer.time(SECONDS)
-            while brain.timer.time(SECONDS) < time +30:
-                if optical.is_near_object():
-                    puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-            puncher.set_stopping(COAST)
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
-            drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
-            drivetrain.set_drive_velocity(70, PERCENT)
-            drivetrain.turn_for(RIGHT, 70, DEGREES)
-            drivetrain.drive_for(FORWARD, 950, MM)
-            drivetrain.turn_for(LEFT, 35, DEGREES)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
