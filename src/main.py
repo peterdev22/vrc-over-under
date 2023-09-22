@@ -190,14 +190,6 @@ def autonomous():
         
     elif team_position == "skill":
         time = 0
-        '''
-        puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
-        puncher.set_stopping(HOLD)
-        drivetrain.drive_for(Reverse, 300, MM, 70, PERCENT, wait = True)
-        drivetrain.turn_for(LEFT, 75, DEGREES)
-        drivetrain.drive_for(Reverse, 100, MM, 70, PERCENT, wait = True)
-        puncher.spin(REVERSE)
-        '''
         drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
@@ -205,9 +197,6 @@ def autonomous():
         drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
         drivetrain.turn_for(RIGHT, 180, DEGREES)
         drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
-        '''
-        for i in range(34):
-            puncher.spin_for(REVERSE, 180, DEGREES, wait = True)'''
         time = brain.timer.time(SECONDS)
         while brain.timer.time(SECONDS) < time +35:
             if optical.is_near_object():
