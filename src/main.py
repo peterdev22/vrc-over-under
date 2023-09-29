@@ -177,16 +177,27 @@ def autonomous():
     # - preload triball line up with the right edge of the robot(skill: red defence position, alliance triball on the middle left of the left side of the goal)
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
-        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
+        drivetrain.turn_for(RIGHT, 38, DEGREES)
+        drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
+        right_drive_smart.spin_for(FORWARD, 6, TURNS)
+        wings.set(True)
+        drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
+        right_drive_smart.spin_for(FORWARD, 5, TURNS)
+        drivetrain.turn_for(LEFT, 26, DEGREES)
+        wings.set(False)
+        drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
+        
         
     elif team_position == "red_offence" or team_position == "blue_offence":
-        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
-        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(FORWARD, 500, MM, 40, PERCENT, wait = True)
+        drivetrain.set_timeout(1, SECONDS)
+        wings.set(True)
+        drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
+        left_drive_smart.spin_for(FORWARD, 5, TURNS)
+        drivetrain.turn_for(RIGHT, 26, DEGREES)
+        wings.set(False)
+        drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
         
     elif team_position == "skill":
         time = 0
@@ -269,8 +280,8 @@ def driver_control():
             right_drive_smart.spin(FORWARD)
     # puncher control 
         if controller_1.buttonL1.pressing():
+            puncher.set_velocity(100, PERCENT)
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
-            puncher.spin_to_position(0,DEGREES, wait = False)
         elif controller_1.buttonL2.pressing():
             sensor_status = not sensor_status
             if sensor_status:
@@ -280,6 +291,7 @@ def driver_control():
             while controller_1.buttonL2.pressing():
                 wait(50, MSEC)
         elif optical.is_near_object() and sensor_status:
+            puncher.set_velocity(100, PERCENT)
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         elif controller_1.buttonX.pressing():
             if not matchload:
