@@ -198,6 +198,11 @@ def autonomous():
         drivetrain.turn_for(RIGHT, 26, DEGREES)
         wings.set(False)
         drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 500, MM, 40, PERCENT, wait = True)
+        drivetrain.turn_for(LEFT, 90, DEGREES)
+        drivetrain.drive_for(REVERSE, 100, MM, 60, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 2000, MM, 30, PERCENT, wait = True)
+        wings.set(True)
         
     elif team_position == "skill":
         time = 0
