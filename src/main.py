@@ -142,6 +142,7 @@ def drivetrain_turn(target_angle, Direction):
     inertial.set_heading(0.0, DEGREES)
     drivetrain.turn(Direction)
     current_angle = inertial.heading(DEGREES)
+    total_angle = 0
     if Direction == LEFT:
             target_angle = 360 - target_angle
     while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
@@ -151,8 +152,9 @@ def drivetrain_turn(target_angle, Direction):
             turn_angle = target_angle - current_angle
         if turn_angle < 0:
             turn_angle += 360
+        total_angle += turn_angle
         current_angle = inertial.heading(DEGREES)
-        drivetrain.set_turn_velocity(turn_angle*0.7+5, RPM)
+        drivetrain.set_turn_velocity(turn_angle*0.7 + total_angle*0.005, RPM)
     drivetrain.stop()
 
 # gps sensor def
@@ -173,8 +175,7 @@ def goto(x_cord, y_cord, speed, wait):
 def autonomous():
     #defencive
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
-    # - left back wheel on the second connection of the foam tile, "r" on the front ramp lined up with the connection line, 
-    # - preload triball line up with the right edge of the robot(skill: red defence position, alliance triball on the middle left of the left side of the goal)
+    # - 
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
@@ -258,19 +259,21 @@ def driver_control():
     # Process every 20 milliseconds
     while True:
     # Drive Train
-        forward = controller_1.axis3.position()
         rotate = 70*math.sin(0.007*controller_1.axis4.position())
-        
+        if controller_1.axis3.position() < -60:
+            forward = -60
+        else:
+            forward = controller_1.axis3.position()
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
 
-        if left_drive_smart_speed < 2 and left_drive_smart_speed > -2:
+        if left_drive_smart_speed < 10 and left_drive_smart_speed > -10:
             if left_drive_smart_stopped:
                 left_drive_smart.stop()
                 left_drive_smart_stopped = 0
         else:
             left_drive_smart_stopped = 1
-        if right_drive_smart_speed < 2 and right_drive_smart_speed > -2:
+        if right_drive_smart_speed < 10 and right_drive_smart_speed > -10:
             if right_drive_smart_stopped:
                 right_drive_smart.stop()
                 right_drive_smart_stopped = 0
@@ -319,6 +322,38 @@ def driver_control():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
+            
+    #auto test
+        if controller_1.buttonA.pressing():
+            if team_position == "red_defence" or team_position == "blue_defence":
+                drivetrain.set_timeout(1, SECONDS)
+                drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
+                drivetrain.turn_for(RIGHT, 38, DEGREES)
+                drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
+                drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
+                right_drive_smart.spin_for(FORWARD, 6, TURNS)
+                wings.set(True)
+                drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
+                right_drive_smart.spin_for(FORWARD, 5, TURNS)
+                drivetrain.turn_for(LEFT, 26, DEGREES)
+                wings.set(False)
+                drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
+                
+            elif team_position == "red_offence" or team_position == "blue_offence":
+                drivetrain.set_timeout(1, SECONDS)
+                wings.set(True)
+                drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
+                left_drive_smart.spin_for(FORWARD, 5, TURNS)
+                drivetrain.turn_for(RIGHT, 26, DEGREES)
+                wings.set(False)
+                drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
+                drivetrain.drive_for(REVERSE, 500, MM, 40, PERCENT, wait = True)
+                drivetrain.turn_for(LEFT, 90, DEGREES)
+                drivetrain.drive_for(REVERSE, 100, MM, 60, PERCENT, wait = True)
+                drivetrain.drive_for(FORWARD, 2000, MM, 30, PERCENT, wait = True)
+                wings.set(True)
+            
+        
     
     # Wait before repeating the controller input process
     wait(20, MSEC)
