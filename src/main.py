@@ -38,14 +38,14 @@ puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
 puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
 puncher = MotorGroup(puncher_a, puncher_b)
 
-# Drivetrain
-drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
-
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT8, -110, -150, MM, 180) #- x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -90) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
+
+# Drivetrain
+drivetrain = SmartDrive(left_drive_smart, right_drive_smart,gps, 299.24, 260, 230, MM, 0.6)
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
@@ -168,7 +168,7 @@ def goto(x_cord, y_cord, speed, wait):
         angle = math.asin((math.sin(90 / 180.0 * math.pi) * b) / a) / math.pi * 180
         if c < 0:
             angle = 180 - angle
-            drivetrain.turn_for(RIGHT, angle, DEGREES)
+            drivetrain.turn_to_heading(angle, DEGREES)
             drivetrain.drive_for(FORWARD, a, MM, speed, PERCENT, wait = wait)
           
 # Autonomous def
@@ -216,7 +216,7 @@ def autonomous():
         drivetrain.turn_for(RIGHT, 180, DEGREES)
         drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
         time = brain.timer.time(SECONDS)
-        while brain.timer.time(SECONDS) < time +35:
+        while brain.timer.time(SECONDS) < time +25:
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
@@ -246,7 +246,7 @@ def autonomous():
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch)
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
-    drivetrain.set_stopping(BRAKE)
+    drivetrain.set_stopping(COAST)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
@@ -324,7 +324,7 @@ def driver_control():
         else:
             wings.set(wings_status)
             
-        if controller_1.bottonA.pressing():
+        if controller_1.buttonA.pressing():
             if team_position == "red_defence" or team_position == "blue_defence":
                 drivetrain.set_timeout(1, SECONDS)
                 drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
