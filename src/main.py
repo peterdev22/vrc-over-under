@@ -75,6 +75,26 @@ def team_choosing():
     team = ""
     position = ""
     while True:
+        if controller_1.buttonL1.pressing():
+            brain.screen.draw_image_from_file( "red_offence_confirmed.png", 0, 4)
+            while controller_1.buttonL1.pressing():
+                wait(5, MSEC)
+            return "red_offence"
+        elif controller_1.buttonL2.pressing():
+            brain.screen.draw_image_from_file( "red_defence_confirmed.png", 0, 4)
+            while controller_1.buttonL2.pressing():
+                wait(5, MSEC)
+            return "red_defence"
+        elif controller_1.buttonR1.pressing():
+            brain.screen.draw_image_from_file( "blue_offence_confirmed.png", 0, 4)
+            while controller_1.buttonR1.pressing():
+                wait(5, MSEC)
+            return "blue_offence"
+        elif controller_1.buttonR2.pressing():
+            brain.screen.draw_image_from_file( "blue_defence_confirmed.png", 0, 4)
+            while controller_1.buttonR2.pressing():
+                wait(5, MSEC)
+            return "blue_defence"
         if brain.screen.pressing() and 8 <= brain.screen.y_position() <= 26:
             # Team choosing
             if 139 <= brain.screen.x_position() <= 240:
