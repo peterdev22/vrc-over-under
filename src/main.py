@@ -41,7 +41,7 @@ puncher = MotorGroup(puncher_a, puncher_b)
 
 # Sensor
 inertial = Inertial(Ports.PORT3)
-gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -90) #- x-offset, y-offset, angle offset
+gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
 # Drivetrain
@@ -229,34 +229,26 @@ def autonomous():
     elif team_position == "skill":
         time = 0
         drivetrain.set_timeout(1, SECONDS)
-        drivetrain.drive_for(FORWARD, 1300, MM, 100, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 340, MM, 10, PERCENT, wait = True)
+        left_drive_smart.spin_for(FORWARD, 5.5, TURNS)
+        drivetrain.turn_for(RIGHT, 20, DEGREES)
+        drivetrain.drive_for(FORWARD, 450, MM, 70, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 530, MM, 25, PERCENT, wait = True)
+        drivetrain.turn_to_heading(65, DEGREES, 10, PERCENT, wait = True)
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
         puncher.set_stopping(HOLD)
-        drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
-        drivetrain.turn_for(RIGHT, 180, DEGREES)
-        drivetrain.drive_for(REVERSE, 130, MM, 10, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 100, MM, 10, PERCENT, wait = True)
         time = brain.timer.time(SECONDS)
-        while brain.timer.time(SECONDS) < time +25:
+        while brain.timer.time(SECONDS) < time +2:
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
         puncher.set_stopping(COAST)
-        drivetrain.drive_for(FORWARD, 400, MM, 80, PERCENT)
-        drivetrain.set_drive_velocity(70, PERCENT)
-        drivetrain.turn_for(RIGHT, 70, DEGREES)
-        drivetrain.drive_for(FORWARD, 950, MM)
-        drivetrain.turn_for(LEFT, 30, DEGREES)
-        drivetrain.drive_for(FORWARD, 5000, MM)
-        drivetrain.drive_for(FORWARD, 900, MM, 40, PERCENT)
-        drivetrain.turn_for(RIGHT, 20, DEGREES)
-        drivetrain.drive_for(REVERSE, 5000, MM, 30, PERCENT)
-        drivetrain.drive_for(REVERSE, 5000, MM, 30, PERCENT)
-        drivetrain.turn_for(LEFT, 165, DEGREES)
-        wings.set(True)
-        for i in range(3):
-            drivetrain.drive_for(FORWARD, 1000, MM, 100, PERCENT)
-            drivetrain.drive_for(REVERSE, 700, MM, 30, PERCENT)
-            drivetrain.turn_for(LEFT, 15, DEGREES)
+        drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
+        drivetrain.turn_to_heading(120, DEGREES, 10, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 400, MM, 20, PERCENT, wait = True)
+        drivetrain.turn_to_heading(90, DEGREES, 10, PERCENT, wait = True)
+        #! have not finished
         
     else:
         controller_1.screen.print("team position not selected")
@@ -266,7 +258,7 @@ def autonomous():
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch)
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
-    drivetrain.set_stopping(COAST)
+    drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
@@ -345,35 +337,16 @@ def driver_control():
             wings.set(wings_status)
             
         if controller_1.buttonA.pressing():
-            if team_position == "red_defence" or team_position == "blue_defence":
-                drivetrain.set_timeout(1, SECONDS)
-                drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
-                drivetrain.turn_for(RIGHT, 38, DEGREES)
-                drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
-                drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
-                right_drive_smart.spin_for(FORWARD, 6, TURNS)
-                wings.set(True)
-                drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
-                right_drive_smart.spin_for(FORWARD, 5, TURNS)
-                drivetrain.turn_for(LEFT, 26, DEGREES)
-                wings.set(False)
-                drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
-        
-        
-            elif team_position == "red_offence" or team_position == "blue_offence":
-                drivetrain.set_timeout(1, SECONDS)
-                wings.set(True)
-                drivetrain.drive_for(FORWARD, 500, MM, 20, PERCENT, wait = True)
-                right_drive_smart.spin_for(FORWARD, 5, TURNS)
-                drivetrain.turn_for(LEFT, 15, DEGREES)
-                wings.set(False)
-                drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
-                drivetrain.drive_for(REVERSE, 230, MM, 30, PERCENT, wait = True)
-                wait(100, MSEC)
-                drivetrain.turn_for(LEFT, 200, DEGREES)
-                drivetrain.drive_for(REVERSE, 450, MM, 50, PERCENT, wait = True)
-                drivetrain.drive_for(FORWARD, 300, MM, 50, PERCENT, wait = True)
-                wings.set(True)
+            if team_position == "skill":
+                drivetrain.drive_for(FORWARD, 340, MM, 10, PERCENT, wait = True)
+                left_drive_smart.spin_for(FORWARD, 5.5, TURNS)
+                drivetrain.turn_for(RIGHT, 20, DEGREES)
+                drivetrain.drive_for(FORWARD, 450, MM, 70, PERCENT, wait = True)
+                drivetrain.drive_for(REVERSE, 530, MM, 25, PERCENT, wait = True)
+                drivetrain.turn_to_heading(65, DEGREES, 10, PERCENT, wait = True)
+                puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
+                puncher.set_stopping(HOLD)
+                drivetrain.drive_for(REVERSE, 100, MM, 10, PERCENT, wait = True)
     
     # Wait before repeating the controller input process
     wait(20, MSEC)
