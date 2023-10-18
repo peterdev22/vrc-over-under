@@ -199,32 +199,26 @@ def autonomous():
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
-        drivetrain.turn_for(RIGHT, 38, DEGREES)
+        right_drive_smart.spin_for(REVERSE, 5.5, TURNS)
         drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 500, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 6, TURNS)
         wings.set(True)
-        drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
-        right_drive_smart.spin_for(FORWARD, 5, TURNS)
-        drivetrain.turn_for(LEFT, 26, DEGREES)
+        drivetrain.drive_for(FORWARD, 400, MM, 20, PERCENT, wait = True)
+        right_drive_smart.spin_for(FORWARD, 5.5, TURNS)
         wings.set(False)
-        drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
         
         
     elif team_position == "red_offence" or team_position == "blue_offence":
         drivetrain.set_timeout(1, SECONDS)
         wings.set(True)
         drivetrain.drive_for(FORWARD, 500, MM, 20, PERCENT, wait = True)
-        right_drive_smart.spin_for(FORWARD, 5, TURNS)
-        drivetrain.turn_for(LEFT, 15, DEGREES)
+        right_drive_smart.spin_for(FORWARD, 7, TURNS)
+        right_drive_smart.spin_for(FORWARD, 0.5, TURNS)
         wings.set(False)
         drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
         drivetrain.drive_for(REVERSE, 230, MM, 30, PERCENT, wait = True)
-        wait(100, MSEC)
-        drivetrain.turn_for(LEFT, 200, DEGREES)
-        drivetrain.drive_for(REVERSE, 450, MM, 50, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 300, MM, 50, PERCENT, wait = True)
-        wings.set(True)
         
     elif team_position == "skill":
         time = 0
