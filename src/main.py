@@ -244,15 +244,15 @@ def autonomous():
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
         puncher.set_stopping(HOLD)
         time = brain.timer.time(SECONDS)
-        while brain.timer.time(SECONDS) < time +25:
+        while brain.timer.time(SECONDS) < time +27:
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
-        puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
         left_drive_smart.spin_for(FORWARD, 2, TURNS, 20, PERCENT)
         drivetrain.drive_for(FORWARD, 700, MM, 50, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 1.15, TURNS, 20, PERCENT)
+        puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 1950, MM, 70, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 2.1, TURNS, 20, PERCENT, wait = False)
         left_drive_smart.spin_for(REVERSE, 2.1, TURNS, 20, PERCENT, wait = True)
@@ -285,25 +285,27 @@ def driver_control():
     elif team_position == "red_offence" or team_position == "blue_offence":
         sensor_status = 0
     elif team_position == "skill":
+        time = 0
         sensor_status = 1
         wings.set(True)
         wait(450, MSEC)
         wings.set(False)
-        left_drive_smart.spin_for(FORWARD, 1.5, TURNS)
+        left_drive_smart.spin_for(FORWARD, 1.5, TURNS, 20, PERCENT)
         drivetrain.drive_for(FORWARD, 280, MM, 40, PERCENT, wait = True)
-        left_drive_smart.spin_for(FORWARD, 1, TURNS)
+        left_drive_smart.spin_for(FORWARD, 1, TURNS, 20, PERCENT)
         drivetrain.drive_for(FORWARD, 450, MM, 70, PERCENT, wait = True)
         drivetrain.drive_for(REVERSE, 400, MM, 30, PERCENT, wait = True)
-        right_drive_smart.spin_for(REVERSE, 2, TURNS)
+        right_drive_smart.spin_for(REVERSE, 2.15, TURNS, 20, PERCENT)
+        left_drive_smart.spin_for(REVERSE, 0.1, TURNS, 20, PERCENT)
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
         puncher.set_stopping(HOLD)
         time = brain.timer.time(SECONDS)
-        while brain.timer.time(SECONDS) < time +25:
+        while brain.timer.time(SECONDS) < time +27:
             if optical.is_near_object():
                 puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
-        puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
+        puncher.set_stopping(COAST)
     # Process every 20 milliseconds
     while True:
     # Drive Train
