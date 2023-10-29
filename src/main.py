@@ -259,15 +259,20 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 1400, MM, 40, PERCENT, wait = True)
         right_drive_smart.spin_for(REVERSE, 1.8, TURNS, 20, PERCENT, wait = False)
         left_drive_smart.spin_for(FORWARD, 2, TURNS, 20, PERCENT, wait = True)
-        for i in range(3):
+        for i in range(2):
             wings.set(True)
             drivetrain.drive_for(FORWARD, 900, MM, 70, PERCENT, wait = True)
             wings.set(False)
             drivetrain.drive_for(REVERSE, 900, MM, 40, PERCENT, wait = True)
             right_drive_smart.spin_for(FORWARD, 0.5, TURNS, 20, PERCENT, wait = False)
             wait(500, MSEC)
+        left_drive_smart.spin_for(REVERSE, 1.5, TURNS, 20, PERCENT, wait = False)
+        drivetrain.drive_for(FORWARD, 500, MM, 20, PERCENT, wait = True)
+        left_drive_smart.spin_for(FORWARD, 2.5, TURNS, 20, PERCENT, wait = False)
+        drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
+        left_drive_smart.spin_for(FORWARD, 1, TURNS, 20, PERCENT, wait = False)
+        drivetrain.drive_for(FORWARD, 500, MM, 70, PERCENT, wait = True)
         
-        #! have not finished
         
     else:
         controller_1.screen.print("team position not selected")
