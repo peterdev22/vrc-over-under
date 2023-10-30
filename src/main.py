@@ -270,8 +270,7 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 500, MM, 20, PERCENT, wait = True)
         left_drive_smart.spin_for(FORWARD, 2.5, TURNS, 20, PERCENT, wait = False)
         drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
-        left_drive_smart.spin_for(FORWARD, 1, TURNS, 20, PERCENT, wait = False)
-        drivetrain.drive_for(FORWARD, 500, MM, 70, PERCENT, wait = True)
+        left_drive_smart.spin_for(FORWARD, 1, TURNS, 20, PERCENT, wait = False)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
         
         
     else:
