@@ -67,6 +67,7 @@ inertial.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
 wings_status = 0
+blocker_status = 1
 
 wings.set(False)
 blocker.set(True)
@@ -376,10 +377,13 @@ def driver_control():
                 wait(50, MSEC)
         else:
             wings.set(wings_status)
-            
+    #blocker control        
         if controller_1.buttonY.pressing():
-            blocker.set(False)
-    
+            blocker_status = not blocker_status
+            while controller_1.buttonY.pressing():
+                wait(50, MSEC)
+        else:
+            blocker.set(blocker_status)    
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
