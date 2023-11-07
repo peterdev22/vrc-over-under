@@ -14,7 +14,7 @@ import urandom
 # - inertial sensor: #3
 # - gps sensor: #8
 # - optial sensor: #7
-# - wings: a
+# - wings: a; blocker: c
 
 
 # Brain
@@ -70,7 +70,7 @@ wings_status = 0
 blocker_status = 1
 
 wings.set(False)
-blocker.set(True)
+blocker.set(blocker_status)
 
 brain.screen.draw_image_from_file("begin.png", 0, 4)
 team_position = " "
@@ -281,7 +281,7 @@ def autonomous():
 # - controller map: left joystick: moving, L1 trigger: wings(hold)
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch)
 def driver_control():
-    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload
+    global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload, blocker_status
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
@@ -383,7 +383,7 @@ def driver_control():
             while controller_1.buttonY.pressing():
                 wait(50, MSEC)
         else:
-            blocker.set(blocker_status)    
+            blocker.set(blocker_status)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
