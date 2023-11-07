@@ -49,7 +49,7 @@ gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle o
 optical = Optical(Ports.PORT7)
 
 # Drivetrain
-drivetrain = SmartDrive(left_drive_smart, right_drive_smart,gps, 299.24, 260, 230, MM, 0.6)
+drivetrain = Drivetrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
@@ -166,7 +166,55 @@ def team_choosing():
 
 # turing def
 # - Direction = RIGHT or LEFT
-def drivetrain_turn(target_angle, Direction):
+    def drivetrain_turn(target_angle, Direction):
+        # Constants for PID control
+        kp = 1.0  # Proportional gain
+        ki = 0.1  # Integral gain
+        kd = 0.05  # Derivative gain
+
+        # Variables for PID control
+        previous_error = 0
+        integral = 0
+
+        inertial_1.set_heading(0.0, DEGREES)
+        inertial_2.set_heading(0.0, DEGREES)
+        drivetrain.turn(Direction)
+        
+        current_angle = (inertial_1.heading(DEGREES) + inertial_2.heading(DEGREES)) / 2
+        error_sum = 0
+
+        if Direction == LEFT:
+            target_angle = 360 - target_angle
+        
+        while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
+            error = target_angle - current_angle
+            
+            # Integral term
+            integral += error
+            
+            # Derivative term
+            derivative = error - previous_error
+
+            # PID calculation for the output
+            pid_output = (kp * error) + (ki * integral) + (kd * derivative)
+            
+            previous_error = error
+            
+            # Ensuring the output is within acceptable ranges
+            if pid_output > 100:
+                pid_output = 100
+            elif pid_output < -100:
+                pid_output = -100
+            
+            # Adjust the turn velocity based on the PID output
+            drivetrain.set_turn_velocity(pid_output, RPM)
+            
+            # Update current angle
+            current_angle = (inertial_1.heading(DEGREES) + inertial_2.heading(DEGREES)) / 2
+        
+        drivetrain.stop()
+        
+'''def drivetrain_turn(target_angle, Direction):
     inertial_1.set_heading(0.0, DEGREES)
     inertial_2.set_heading(0.0, DEGREES)
     drivetrain.turn(Direction)
@@ -184,7 +232,7 @@ def drivetrain_turn(target_angle, Direction):
         total_angle += turn_angle
         current_angle = (inertial_1.heading(DEGREES)+inertial_2.heading(DEGREES))/2
         drivetrain.set_turn_velocity(turn_angle*0.7 + total_angle*0.005, RPM)
-    drivetrain.stop()
+    drivetrain.stop()'''
 
 # gps sensor def
 def goto(x_cord, y_cord, speed, wait):
@@ -204,7 +252,7 @@ def goto(x_cord, y_cord, speed, wait):
 def autonomous():
     #defencive
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
-    # - 
+    drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
@@ -219,7 +267,6 @@ def autonomous():
         wings.set(False)
         right_drive_smart.spin_for(REVERSE, 1, TURNS)
         drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
-        
         
     elif team_position == "red_offence" or team_position == "blue_offence":
         drivetrain.set_timeout(1, SECONDS)
@@ -277,7 +324,6 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 300, MM, 20, PERCENT, wait = True)
         left_drive_smart.spin_for(FORWARD, 1, TURNS, 20, PERCENT, wait = False)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
         
-        
     else:
         controller_1.screen.print("team position not selected")
 
@@ -286,7 +332,8 @@ def autonomous():
 # - R1 trigger: puncher, R2 trigger: change puncher status(switch)
 def driver_control():
     global left_drive_smart_stopped, right_drive_smart_stopped, sensor_status, wings_status, matchload, blocker_status
-    drivetrain.set_stopping(BRAKE)
+    drivetrain.set_stopping(COAST)
+    time = brain.timer.time(SECONDS)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
@@ -294,7 +341,6 @@ def driver_control():
     elif team_position == "red_offence" or team_position == "blue_offence":
         sensor_status = 0
     elif team_position == "skill":
-        time = 0
         sensor_status = 1
         wings.set(True)
         wait(450, MSEC)
@@ -356,7 +402,7 @@ def driver_control():
             else:
                 controller_1.rumble("-")
             while controller_1.buttonL2.pressing():
-                wait(50, MSEC)
+                wait(20, MSEC)
         elif optical.is_near_object() and sensor_status:
             puncher.set_velocity(100, PERCENT)
             puncher.spin_for(REVERSE, 180, DEGREES, wait = True)
@@ -369,7 +415,7 @@ def driver_control():
                 puncher.set_stopping(COAST)
             matchload = not matchload
             while controller_1.buttonX.pressing():
-                wait(50, MSEC)
+                wait(20, MSEC)
         else:
             puncher.stop()
     # wings control
@@ -378,16 +424,19 @@ def driver_control():
         elif controller_1.buttonR2.pressing():
             wings_status = not wings_status
             while controller_1.buttonR2.pressing():
-                wait(50, MSEC)
+                wait(20, MSEC)
         else:
             wings.set(wings_status)
     #blocker control        
         if controller_1.buttonY.pressing():
             blocker_status = not blocker_status
             while controller_1.buttonY.pressing():
-                wait(50, MSEC)
+                wait(20, MSEC)
         else:
             blocker.set(blocker_status)
+    #auto driving mode change
+        if brain.timer.time(SECONDS) > time + 70:
+            drivetrain.set_stopping(HOLD)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
