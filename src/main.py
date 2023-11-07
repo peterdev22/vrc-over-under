@@ -43,7 +43,8 @@ flywheel_b = Motor(Ports.PORT15, GearSetting.RATIO_36_1, True)
 flywheel = MotorGroup(flywheel_a, flywheel_b)
 
 # Sensor
-inertial = Inertial(Ports.PORT3)
+inertial_1 = Inertial(Ports.PORT3)
+inertial_2 = Inertial(Ports.PORT2)
 gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
@@ -61,9 +62,11 @@ right_drive_smart_speed = 0
 
 puncher.set_position(0,DEGREES)
 puncher.set_velocity(100, PERCENT)
-inertial.calibrate()
+inertial_1.calibrate()
+inertial_2.calibrate()
 gps.calibrate()
-inertial.set_heading(0, DEGREES)
+inertial_1.set_heading(0, DEGREES)
+inertial_2.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
 wings_status = 0
@@ -164,9 +167,10 @@ def team_choosing():
 # turing def
 # - Direction = RIGHT or LEFT
 def drivetrain_turn(target_angle, Direction):
-    inertial.set_heading(0.0, DEGREES)
+    inertial_1.set_heading(0.0, DEGREES)
+    inertial_2.set_heading(0.0, DEGREES)
     drivetrain.turn(Direction)
-    current_angle = inertial.heading(DEGREES)
+    current_angle = (inertial_1.heading(DEGREES)+inertial_2.heading(DEGREES))/2
     total_angle = 0
     if Direction == LEFT:
             target_angle = 360 - target_angle
@@ -178,7 +182,7 @@ def drivetrain_turn(target_angle, Direction):
         if turn_angle < 0:
             turn_angle += 360
         total_angle += turn_angle
-        current_angle = inertial.heading(DEGREES)
+        current_angle = (inertial_1.heading(DEGREES)+inertial_2.heading(DEGREES))/2
         drivetrain.set_turn_velocity(turn_angle*0.7 + total_angle*0.005, RPM)
     drivetrain.stop()
 
