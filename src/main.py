@@ -43,8 +43,7 @@ flywheel_b = Motor(Ports.PORT15, GearSetting.RATIO_36_1, True)
 flywheel = MotorGroup(flywheel_a, flywheel_b)
 
 # Sensor
-inertial_1 = Inertial(Ports.PORT3)
-inertial_2 = Inertial(Ports.PORT2)
+inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
@@ -62,11 +61,9 @@ right_drive_smart_speed = 0
 
 puncher.set_position(0,DEGREES)
 puncher.set_velocity(100, PERCENT)
-inertial_1.calibrate()
-inertial_2.calibrate()
+inertial.calibrate()
 gps.calibrate()
-inertial_1.set_heading(0, DEGREES)
-inertial_2.set_heading(0, DEGREES)
+inertial.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
 wings_status = 0
@@ -167,20 +164,15 @@ def team_choosing():
 # turing def
 # - Direction = RIGHT or LEFT
     def drivetrain_turn(target_angle, Direction):
-        # Constants for PID control
-        kp = 1.0  # Proportional gain
-        ki = 0.1  # Integral gain
-        kd = 0.05  # Derivative gain
-
-        # Variables for PID control
+        kp = 1
+        ki = 0.1
+        kd = 0.05
         previous_error = 0
         integral = 0
 
-        inertial_1.set_heading(0.0, DEGREES)
-        inertial_2.set_heading(0.0, DEGREES)
+        inertial.set_heading(0, DEGREES)
+        current_angle = inertial.heading(DEGREES)
         drivetrain.turn(Direction)
-        
-        current_angle = (inertial_1.heading(DEGREES) + inertial_2.heading(DEGREES)) / 2
         error_sum = 0
 
         if Direction == LEFT:
@@ -188,30 +180,16 @@ def team_choosing():
         
         while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
             error = target_angle - current_angle
-            
-            # Integral term
             integral += error
-            
-            # Derivative term
             derivative = error - previous_error
-
-            # PID calculation for the output
             pid_output = (kp * error) + (ki * integral) + (kd * derivative)
-            
             previous_error = error
-            
-            # Ensuring the output is within acceptable ranges
             if pid_output > 100:
                 pid_output = 100
             elif pid_output < -100:
                 pid_output = -100
-            
-            # Adjust the turn velocity based on the PID output
-            drivetrain.set_turn_velocity(pid_output, RPM)
-            
-            # Update current angle
-            current_angle = (inertial_1.heading(DEGREES) + inertial_2.heading(DEGREES)) / 2
-        
+            drivetrain.set_turn_velocity(pid_output, PERCENT)
+            current_angle = inertial.heading(DEGREES)
         drivetrain.stop()
         
 '''def drivetrain_turn(target_angle, Direction):
@@ -434,9 +412,20 @@ def driver_control():
                 wait(20, MSEC)
         else:
             blocker.set(blocker_status)
-    #auto driving mode change
-        if brain.timer.time(SECONDS) > time + 70:
+    #driving mode change
+        if controller_1.buttonUp.pressing():
             drivetrain.set_stopping(HOLD)
+        if controller_1.buttonDown.pressing():
+            drivetrain.set_stopping(COAST)
+    #PID test       
+        if controller_1.buttonA.pressing():
+            drivetrain_turn(90, RIGHT)
+            wait(1000, MSEC)
+            drivetrain_turn(180, LEFT)
+            wait(1000, MSEC)
+            drivetrain_turn(135, RIGHT)
+            wait(1000, MSEC)
+            drivetrain_turn(45, LEFT)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 

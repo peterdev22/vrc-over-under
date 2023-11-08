@@ -12,7 +12,8 @@ Frij's code uses purely Python. You can find the wiring guide at the top of main
 - 6-motor drivetrain at 360 RPM
 - 2-motor puncher at 100 RPM
 - Pneumatics powered front wings
-- Passive triball blocker
+- Passive pneumatics blocker & front ramp
+
 
 <br>
 
