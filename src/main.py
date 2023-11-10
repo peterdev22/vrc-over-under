@@ -48,7 +48,7 @@ gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle o
 optical = Optical(Ports.PORT7)
 
 # Drivetrain
-drivetrain = Drivetrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
+drivetrain = DriveTrain(left_drive_smart, right_drive_smart, 299.24, 260, 230, MM, 0.6)
 
 # Pneumatics
 wings = DigitalOut(brain.three_wire_port.a)
@@ -160,57 +160,6 @@ def team_choosing():
             while brain.screen.pressing():
                 wait(5, MSEC)
         wait(5, MSEC)
-
-# turing def
-# - Direction = RIGHT or LEFT
-    def drivetrain_turn(target_angle, Direction):
-        kp = 1
-        ki = 0.1
-        kd = 0.05
-        previous_error = 0
-        integral = 0
-
-        inertial.set_heading(0, DEGREES)
-        current_angle = inertial.heading(DEGREES)
-        drivetrain.turn(Direction)
-        error_sum = 0
-
-        if Direction == LEFT:
-            target_angle = 360 - target_angle
-        
-        while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
-            error = target_angle - current_angle
-            integral += error
-            derivative = error - previous_error
-            pid_output = (kp * error) + (ki * integral) + (kd * derivative)
-            previous_error = error
-            if pid_output > 100:
-                pid_output = 100
-            elif pid_output < -100:
-                pid_output = -100
-            drivetrain.set_turn_velocity(pid_output, PERCENT)
-            current_angle = inertial.heading(DEGREES)
-        drivetrain.stop()
-        
-'''def drivetrain_turn(target_angle, Direction):
-    inertial_1.set_heading(0.0, DEGREES)
-    inertial_2.set_heading(0.0, DEGREES)
-    drivetrain.turn(Direction)
-    current_angle = (inertial_1.heading(DEGREES)+inertial_2.heading(DEGREES))/2
-    total_angle = 0
-    if Direction == LEFT:
-            target_angle = 360 - target_angle
-    while not (target_angle + 0.5 > current_angle > target_angle - 0.5):
-        if Direction == LEFT:
-            turn_angle = current_angle - target_angle
-        else:
-            turn_angle = target_angle - current_angle
-        if turn_angle < 0:
-            turn_angle += 360
-        total_angle += turn_angle
-        current_angle = (inertial_1.heading(DEGREES)+inertial_2.heading(DEGREES))/2
-        drivetrain.set_turn_velocity(turn_angle*0.7 + total_angle*0.005, RPM)
-    drivetrain.stop()'''
 
 # gps sensor def
 def goto(x_cord, y_cord, speed, wait):
@@ -343,8 +292,10 @@ def driver_control():
     while True:
     # Drive Train
         rotate = 60*math.sin(0.007*controller_1.axis4.position())
-        if controller_1.axis3.position() < -75:
-            forward = -75
+        if blocker_status == 0 and controller_1.axis3.position() < -85:
+            forward = -90
+        elif blocker_status == 1 and controller_1.axis3.position() < -65:
+            forward = -65
         else:
             forward = controller_1.axis3.position()
         left_drive_smart_speed = forward + rotate
@@ -414,18 +365,9 @@ def driver_control():
             blocker.set(blocker_status)
     #driving mode change
         if controller_1.buttonUp.pressing():
-            drivetrain.set_stopping(HOLD)
+            drivetrain.set_stopping(BRAKE)
         if controller_1.buttonDown.pressing():
             drivetrain.set_stopping(COAST)
-    #PID test       
-        if controller_1.buttonA.pressing():
-            drivetrain_turn(90, RIGHT)
-            wait(1000, MSEC)
-            drivetrain_turn(180, LEFT)
-            wait(1000, MSEC)
-            drivetrain_turn(135, RIGHT)
-            wait(1000, MSEC)
-            drivetrain_turn(45, LEFT)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
