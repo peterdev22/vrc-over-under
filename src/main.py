@@ -157,6 +157,31 @@ def team_choosing():
                 wait(5, MSEC)
         wait(5, MSEC)
 
+#def pid turning
+def drivetrain_turn(target_angle):
+    kp = 1.0
+    ki = 0.1
+    kd = 0.05
+    previous_error = 0
+    integral = 0
+
+    inertial.set_heading(0.0, DEGREES)
+    drivetrain.turn(RIGHT)
+    
+    current_angle = inertial.heading(DEGREES)
+    
+    while not (target_angle - 0.5 < current_angle < target_angle + 0.5):
+        error = target_angle - current_angle
+        integral += error
+        integral = max(min(integral, 50), -50)
+        derivative = error - previous_error
+        pid_output = (kp * error) + (ki * integral) + (kd * derivative)
+        previous_error = error
+        pid_output = max(min(pid_output, 100), -100)
+        drivetrain.set_turn_velocity(pid_output, PERCENT)
+        current_angle = inertial_1.heading(DEGREES)
+    drivetrain.stop()
+
 # gps sensor def
 def goto(x_cord, y_cord, speed, wait):
     b = x_cord - gps.x_position(MM)
