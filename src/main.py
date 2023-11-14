@@ -38,10 +38,6 @@ puncher_a = Motor(Ports.PORT4, GearSetting.RATIO_36_1, True)
 puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
 puncher = MotorGroup(puncher_a, puncher_b)
 
-flywheel_a = Motor(Ports.PORT16, GearSetting.RATIO_36_1, True)
-flywheel_b = Motor(Ports.PORT15, GearSetting.RATIO_36_1, True)
-flywheel = MotorGroup(flywheel_a, flywheel_b)
-
 # Sensor
 inertial = Inertial(Ports.PORT3)
 gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle offset
@@ -67,7 +63,7 @@ inertial.set_heading(0, DEGREES)
 sensor_status = 0
 matchload = 0
 wings_status = 0
-blocker_status = 1
+blocker_status = 0
 
 wings.set(False)
 blocker.set(blocker_status)
@@ -181,7 +177,6 @@ def autonomous():
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
-        drivetrain.set_timeout(1, SECONDS)
         drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(REVERSE, 6, TURNS)
         drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
@@ -196,13 +191,12 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
-        drivetrain.set_timeout(1, SECONDS)
         wings.set(True)
         drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 7, TURNS)
         right_drive_smart.spin_for(FORWARD, 3, TURNS)
         wings.set(False)
-        right_drive_smart.spin_for(REVERSE, 1.5, TURNS)
+        right_drive_smart.spin_for(REVERSE, 1.7, TURNS)
         drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
         drivetrain.drive_for(REVERSE, 230, MM, 30, PERCENT, wait = True)
         left_drive_smart.turn_for(REVERSE, 10, TURNS)
@@ -229,7 +223,7 @@ def autonomous():
         puncher.spin_for(REVERSE, 180, DEGREES, wait = False)
         drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
         left_drive_smart.spin_for(FORWARD, 2, TURNS, 20, PERCENT)
-        drivetrain.drive_for(FORWARD, 700, MM, 50, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 750, MM, 50, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 1.15, TURNS, 20, PERCENT)
         puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 1950, MM, 70, PERCENT, wait = True)
@@ -291,23 +285,25 @@ def driver_control():
     # Process every 20 milliseconds
     while True:
     # Drive Train
-        rotate = 60*math.sin(0.007*controller_1.axis4.position())
-        if blocker_status == 0 and controller_1.axis3.position() < -85:
+        rotate = 65*math.sin(0.007*controller_1.axis4.position())
+        if blocker_status == 0 and controller_1.axis3.position() < -90:
             forward = -90
-        elif blocker_status == 1 and controller_1.axis3.position() < -65:
-            forward = -65
+        elif blocker_status == 1 and controller_1.axis3.position() < -55:
+            forward = -55
+        elif blocker_status == 1 and controller_1.axis3.position() > 45:
+            forward = 45
         else:
             forward = controller_1.axis3.position()
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
 
-        if left_drive_smart_speed < 10 and left_drive_smart_speed > -10:
+        if left_drive_smart_speed < 3 and left_drive_smart_speed > -3:
             if left_drive_smart_stopped:
                 left_drive_smart.stop()
                 left_drive_smart_stopped = 0
         else:
             left_drive_smart_stopped = 1
-        if right_drive_smart_speed < 10 and right_drive_smart_speed > -10:
+        if right_drive_smart_speed < 3 and right_drive_smart_speed > -3:
             if right_drive_smart_stopped:
                 right_drive_smart.stop()
                 right_drive_smart_stopped = 0
