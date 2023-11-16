@@ -313,10 +313,8 @@ def driver_control():
         rotate = 65*math.sin(0.007*controller_1.axis4.position())
         if blocker_status == 0 and controller_1.axis3.position() < -90:
             forward = -90
-        elif blocker_status == 1 and controller_1.axis3.position() < -55:
-            forward = -55
-        elif blocker_status == 1 and controller_1.axis3.position() > 45:
-            forward = 45
+        elif blocker_status == 1 and controller_1.axis3.position() < -65:
+            forward = -65
         else:
             forward = controller_1.axis3.position()
         left_drive_smart_speed = forward + rotate
@@ -389,6 +387,11 @@ def driver_control():
             drivetrain.set_stopping(BRAKE)
         if controller_1.buttonDown.pressing():
             drivetrain.set_stopping(COAST)
+        
+        if controller_1.buttonA.pressing():
+            drivetrain_turn(90)
+            while ontroller_1.buttonA.pressing():
+                wait(20, msec)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
