@@ -39,7 +39,7 @@ puncher_b = Motor(Ports.PORT14, GearSetting.RATIO_36_1, False)
 puncher = MotorGroup(puncher_a, puncher_b)
 
 # Sensor
-inertial = Inertial(Ports.PORT3)
+inertial = Inertial(Ports.PORT2)
 gps = Gps(Ports.PORT8, -120.00, -125.00, MM, -95) #- x-offset, y-offset, angle offset
 optical = Optical(Ports.PORT7)
 
@@ -159,21 +159,23 @@ def team_choosing():
 
 #def pid turning
 def drivetrain_turn(target_angle):
-    kp = 0.1
-    ki = 0.1
+    kp = 0.18
+    ki = 0.139
     kd = 0.05
     previous_error = 0
     integral = 0
 
-    inertial.set_heading(0.0, DEGREES)
+    inertial.set_heading(0.5, DEGREES)
     drivetrain.turn(RIGHT)
+    drivetrain.set_stopping(HOLD)
     
     current_angle = inertial.heading(DEGREES)
+        
     
     while not (target_angle - 0.5 < current_angle < target_angle + 0.5):
         error = target_angle - current_angle
         integral += error
-        integral = max(min(integral, 50), -50)
+        integral = max(min(integral, 30), -30)
         derivative = error - previous_error
         pid_output = (kp * error) + (ki * integral) + (kd * derivative)
         previous_error = error
@@ -181,6 +183,7 @@ def drivetrain_turn(target_angle):
         drivetrain.set_turn_velocity(pid_output, PERCENT)
         current_angle = inertial.heading(DEGREES)
     drivetrain.stop()
+
 
 # gps sensor def
 def goto(x_cord, y_cord, speed, wait):
@@ -380,9 +383,9 @@ def driver_control():
             drivetrain.set_stopping(COAST)
         
         if controller_1.buttonA.pressing():
-            drivetrain_turn(90)
-            while ontroller_1.buttonA.pressing():
-                wait(20, msec)
+            drivetrain_turn(45)
+            while controller_1.buttonA.pressing():
+                wait(20, MSEC)
     # Wait before repeating the controller input process
     wait(20, MSEC)
 
