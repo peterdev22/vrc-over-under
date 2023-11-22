@@ -159,7 +159,7 @@ def team_choosing():
 
 #def pid turning
 def drivetrain_turn(target_angle):
-    kp = 1.0
+    kp = 0.1
     ki = 0.1
     kd = 0.05
     previous_error = 0
@@ -179,7 +179,7 @@ def drivetrain_turn(target_angle):
         previous_error = error
         pid_output = max(min(pid_output, 100), -100)
         drivetrain.set_turn_velocity(pid_output, PERCENT)
-        current_angle = inertial_1.heading(DEGREES)
+        current_angle = inertial.heading(DEGREES)
     drivetrain.stop()
 
 # gps sensor def
@@ -202,29 +202,20 @@ def autonomous():
     # - start at the RIGHT SIDE of the Alliance station!!!!!!
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
-        drivetrain.drive_for(REVERSE, 400, MM, 20, PERCENT, wait = True)
-        right_drive_smart.spin_for(REVERSE, 6, TURNS)
-        drivetrain.drive_for(REVERSE, 500, MM, 50, PERCENT, wait = True)
-        drivetrain.drive_for(FORWARD, 600, MM, 20, PERCENT, wait = True)
-        right_drive_smart.spin_for(FORWARD, 6, TURNS)
-        wings.set(True)
-        drivetrain.drive_for(FORWARD, 200, MM, 20, PERCENT, wait = True)
-        right_drive_smart.spin_for(FORWARD, 5.7, TURNS)
-        right_drive_smart.spin_for(FORWARD, 3, TURNS)
-        wings.set(False)
-        right_drive_smart.spin_for(REVERSE, 1, TURNS)
-        drivetrain.drive_for(FORWARD, 1200, MM, 50, PERCENT, wait = True)
+        drivetrain.set_timeout(1, SECONDS)
+        drivetrain.drive_for(FORWARD, 100, MM, 20, PERCENT, wait = True)
+        blocker.set(True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
+        drivetrain.set_timeout(1, SECONDS)
         wings.set(True)
         drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 7, TURNS)
         right_drive_smart.spin_for(FORWARD, 3, TURNS)
         wings.set(False)
-        right_drive_smart.spin_for(REVERSE, 1.7, TURNS)
+        right_drive_smart.spin_for(REVERSE, 1.6, TURNS)
         drivetrain.drive_for(FORWARD, 1000, MM, 50, PERCENT, wait = True)
         drivetrain.drive_for(REVERSE, 230, MM, 30, PERCENT, wait = True)
-        left_drive_smart.turn_for(REVERSE, 10, TURNS)
         
     elif team_position == "skill":
         time = 0
@@ -310,9 +301,9 @@ def driver_control():
     # Process every 20 milliseconds
     while True:
     # Drive Train
-        rotate = 65*math.sin(0.007*controller_1.axis4.position())
-        if blocker_status == 0 and controller_1.axis3.position() < -90:
-            forward = -90
+        rotate = 55*math.sin(0.007*controller_1.axis4.position())
+        if blocker_status == 0 and controller_1.axis3.position() < -85:
+            forward = -85
         elif blocker_status == 1 and controller_1.axis3.position() < -65:
             forward = -65
         else:
