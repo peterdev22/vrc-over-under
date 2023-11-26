@@ -164,14 +164,10 @@ def drivetrain_turn(target_angle):
     kd = 0.05
     previous_error = 0
     integral = 0
-
     inertial.set_heading(0.5, DEGREES)
     drivetrain.turn(RIGHT)
     drivetrain.set_stopping(HOLD)
-    
     current_angle = inertial.heading(DEGREES)
-        
-    
     while not (target_angle - 0.5 < current_angle < target_angle + 0.5):
         error = target_angle - current_angle
         integral += error
@@ -206,7 +202,13 @@ def autonomous():
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
-        drivetrain.drive_for(FORWARD, 100, MM, 20, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 300, MM, 30, PERCENT, wait = True)
+        wings.set(True)
+        drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
+        right_drive_smart.spin_for(FORWARD, 7, TURNS)
+        right_drive_smart.spin_for(FORWARD, 3, TURNS)
+        right_drive_smart.spin_for(REVERSE, 1, TURNS)
+        drivetrain.drive_for(FORWARD, 350, MM, 30, PERCENT)
         blocker.set(True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
@@ -246,8 +248,7 @@ def autonomous():
         right_drive_smart.spin_for(FORWARD, 1.15, TURNS, 20, PERCENT)
         puncher.set_stopping(COAST)
         drivetrain.drive_for(FORWARD, 1950, MM, 70, PERCENT, wait = True)
-        right_drive_smart.spin_for(FORWARD, 2.1, TURNS, 20, PERCENT, wait = False)
-        left_drive_smart.spin_for(REVERSE, 2.1, TURNS, 20, PERCENT, wait = True)
+        drivetrain_turn(225)
         drivetrain.drive_for(FORWARD, 1400, MM, 40, PERCENT, wait = True)
         right_drive_smart.spin_for(REVERSE, 1.8, TURNS, 20, PERCENT, wait = False)
         left_drive_smart.spin_for(FORWARD, 2, TURNS, 20, PERCENT, wait = True)
@@ -276,6 +277,8 @@ def driver_control():
     time = brain.timer.time(SECONDS)
     if team_position == "red_defence" or team_position == "blue_defence":
         sensor_status = 1
+        blocker_status = 0
+        wings_status = 0
         puncher.spin_for(REVERSE, 80, DEGREES, wait = False)
         puncher.set_stopping(HOLD)
     elif team_position == "red_offence" or team_position == "blue_offence":
@@ -307,10 +310,15 @@ def driver_control():
         rotate = 55*math.sin(0.007*controller_1.axis4.position())
         if blocker_status == 0 and controller_1.axis3.position() < -85:
             forward = -85
+        elif blocker_status == 0 and controller_1.axis3.position() > 90:
+            forward = 90
         elif blocker_status == 1 and controller_1.axis3.position() < -65:
             forward = -65
+        elif blocker_status == 1 and controller_1.axis3.position() > 65:
+            forward = 65
         else:
             forward = controller_1.axis3.position()
+            
         left_drive_smart_speed = forward + rotate
         right_drive_smart_speed = forward - rotate
 
