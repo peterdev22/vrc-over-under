@@ -202,13 +202,16 @@ def autonomous():
     drivetrain.set_stopping(BRAKE)
     if team_position == "red_defence" or team_position == "blue_defence":
         drivetrain.set_timeout(1, SECONDS)
-        drivetrain.drive_for(REVERSE, 300, MM, 30, PERCENT, wait = True)
+        drivetrain.drive_for(REVERSE, 600, MM, 30, PERCENT, wait = True)
+        wait(1, SECONDS)
         wings.set(True)
-        drivetrain.drive_for(FORWARD, 450, MM, 20, PERCENT, wait = True)
+        drivetrain.drive_for(FORWARD, 400, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 7, TURNS)
-        right_drive_smart.spin_for(FORWARD, 3, TURNS)
-        right_drive_smart.spin_for(REVERSE, 1, TURNS)
-        drivetrain.drive_for(FORWARD, 350, MM, 30, PERCENT)
+        right_drive_smart.spin_for(FORWARD, 2.7, TURNS)
+        right_drive_smart.spin_for(REVERSE, 0.5, TURNS)
+        wings.set(False)
+        drivetrain.drive_for(FORWARD, 1400, MM, 30, PERCENT)
+        drivetrain.drive_for(FORWARD, 200, MM, 10, PERCENT)
         blocker.set(True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
