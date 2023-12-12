@@ -16,7 +16,6 @@ import urandom
 # - optial sensor: #7
 # - wings: a; blocker: c
 
-
 # Brain
 brain = Brain()
 
@@ -208,10 +207,10 @@ def autonomous():
         drivetrain.drive_for(FORWARD, 400, MM, 20, PERCENT, wait = True)
         right_drive_smart.spin_for(FORWARD, 7, TURNS)
         right_drive_smart.spin_for(FORWARD, 2.7, TURNS)
-        right_drive_smart.spin_for(REVERSE, 0.5, TURNS)
+        right_drive_smart.spin_for(REVERSE, 0.6, TURNS)
         wings.set(False)
         drivetrain.drive_for(FORWARD, 1400, MM, 30, PERCENT)
-        drivetrain.drive_for(FORWARD, 200, MM, 10, PERCENT)
+        drivetrain.drive_for(FORWARD, 200, MM, 15, PERCENT)
         blocker.set(True)
         
     elif team_position == "red_offence" or team_position == "blue_offence":
